@@ -1,0 +1,42 @@
+:root {
+    /* System Colors */
+    --bg-primary: #0f0b0a;
+    --sys-bg-primary: #0A1543;
+    --bg-secondary: #221426;
+    --surface-layer: #1D1340;
+    --control-panel: #19327f;
+    --action: #445EF2;
+    --progress: #A480F2;
+    /* Texts */
+    --text-primary: #F2F2F2;
+    --text-secondary: #777777;
+    --text-accept: #13db31;
+    --text-reject: #d81313;
+    --text-warning: #d8c913;
+    --text-quest: #A219B7;
+    /* clock colors */
+    --safe-time: #20c138;
+    --danger-time: #d81313;
+    --warning-time: #d8c913;
+    --alarm-time: #FF0000;
+    --pause-time: #A219B7;
+    --completed-time: #07fd2c;
+    /* font-family */
+    --font-system: 'Orbitron', sans-serif;
+    --font-ui: 'Rajdhani', sans-serif;
+}
+
+/* Global Defaults */
+body {
+    box-sizing: border-box;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-ui);
+    font-weight: 500;
+    text-align: center;
+    font-size: large;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+}
