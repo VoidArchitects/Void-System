@@ -113,3 +113,8 @@ function completeQuest(id) {
     renderQuests();
 }
 
+// ─────────────────────────────────────────
+//  INITIALIZATION
+// ─────────────────────────────────────────
+// Call this immediately so the quests show up when the page loads!
+renderQuests();
