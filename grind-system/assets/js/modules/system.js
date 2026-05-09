@@ -1,48 +1,127 @@
-//text message delay system
+// ─────────────────────────────────────────
+//  STATE / DATA
+// ─────────────────────────────────────────
+// DOM Elements
 const msg = document.getElementById('message');
 const acceptBtn = document.getElementById('accept');
 const refuseBtn = document.getElementById('refuse');
+const reAcceptBtn = document.getElementById('re-accept');
+const finalRefuseBtn = document.getElementById('final-refuse');
 
-setTimeout(() => {
-    msg.innerHTML = "[you have completed all the necessary requirements of the secret quest '<span style=\"color: var(--text-quest);\">courage of the weak</span>']";
+// State Variables
+// (No global state needed anymore)
 
-    let autoAdvanceTimeout;
+// ─────────────────────────────────────────
+//  HELPER FUNCTIONS
+// ─────────────────────────────────────────
+function setStatus(status) {
+    localStorage.setItem('status', status);
+}
 
-    // Add event listener to wait for user interaction to show next message
-    const showNextMessage = () => {
-        clearTimeout(autoAdvanceTimeout);
-        msg.innerHTML = "[you have earned the right to become a <span style=\"color: var(--text-accept);\">player</span>. will you accept?]";
-        document.removeEventListener('click', showNextMessage);
+function redirect(page) {
+    window.location.replace(page);
+}
 
-        // Show buttons 3 seconds after the second message appears
+// ─────────────────────────────────────────
+//  RENDER FUNCTIONS
+// ─────────────────────────────────────────
+function renderMessage(text) {
+    if (msg) msg.innerHTML = text;
+}
+
+function renderButtons(btn1, btn1Text, btn2, btn2Text) {
+    if (btn1) {
+        btn1.innerHTML = btn1Text;
+        btn1.style.display = "block";
+    }
+    if (btn2) {
+        btn2.innerHTML = btn2Text;
+        btn2.style.display = "block";
+    }
+}
+
+// ─────────────────────────────────────────
+//  LOGIC FUNCTIONS
+// ─────────────────────────────────────────
+function createSequence(initialMessage, nextMessage, btn1, btn1Text, btn2, btn2Text) {
+    let sequenceTimeout;
+    let clickHandler;
+
+    const showNext = () => {
+        clearTimeout(sequenceTimeout);
+        renderMessage(nextMessage);
+        document.removeEventListener('click', clickHandler);
+
         setTimeout(() => {
-            acceptBtn.innerHTML = "accept";
-            refuseBtn.innerHTML = "refuse";
-            acceptBtn.style.display = "block";
-            refuseBtn.style.display = "block";
+            renderButtons(btn1, btn1Text, btn2, btn2Text);
         }, 3000);
     };
 
-    // Delay adding the click listener slightly so the user doesn't accidentally skip the first message
+    clickHandler = showNext;
+
     setTimeout(() => {
-        document.addEventListener('click', showNextMessage);
+        renderMessage(initialMessage);
 
-        // Auto-advance if the user doesn't click within 10 seconds
-        autoAdvanceTimeout = setTimeout(() => {
-            showNextMessage();
-        }, 10000);
-    }, 500);
+        setTimeout(() => {
+            document.addEventListener('click', clickHandler);
+            sequenceTimeout = setTimeout(showNext, 10000);
+        }, 500);
 
-}, 1500);
+    }, 1500);
+}
 
-//button click event listener
+// ─────────────────────────────────────────
+//  EVENT LISTENERS
+// ─────────────────────────────────────────
+function setupEventListeners() {
+    if (acceptBtn) {
+        acceptBtn.addEventListener('click', () => {
+            setStatus('accepted');
+            redirect('dashboard.html');
+        });
+    }
 
-acceptBtn.addEventListener('click', () => {
-    localStorage.setItem('status', 'accepted');
-    window.location.replace('dashboard.html');
-});
+    if (refuseBtn) {
+        refuseBtn.addEventListener('click', () => {
+            setStatus('rejected');
+            redirect('rejected.html');
+        });
+    }
 
-refuseBtn.addEventListener('click', () => {
-    localStorage.setItem('status', 'rejected');
-    window.location.replace('rejected.html');
-});
+    if (reAcceptBtn) {
+        reAcceptBtn.addEventListener('click', () => {
+            setStatus('accepted');
+            redirect('dashboard.html');
+        });
+    }
+
+    if (finalRefuseBtn) {
+        finalRefuseBtn.addEventListener('click', () => {
+            setStatus('banned');
+            location.reload();
+        });
+    }
+}
+
+// ─────────────────────────────────────────
+//  INITIALIZATION
+// ─────────────────────────────────────────
+function initSystem() {
+    setupEventListeners();
+
+    if (msg && acceptBtn && refuseBtn) {
+        createSequence(
+            '[you have completed all the necessary requirements of the secret quest \'<span style="color: var(--text-quest);">courage of the weak</span>\']',
+            '[you have earned the right to become a <span style="color: var(--text-accept);">player</span>. will you accept?]',
+            acceptBtn, "accept", refuseBtn, "refuse"
+        );
+    } else if (msg && reAcceptBtn && finalRefuseBtn) {
+        createSequence(
+            '[your previous refusal has been noted. however, the system has detected a remnant of potential.]',
+            '[this is your final opportunity. will you reconsider and become a <span style="color: var(--text-accept);">player</span>?]',
+            reAcceptBtn, "accept", finalRefuseBtn, "refuse"
+        );
+    }
+}
+
+initSystem();
