@@ -56,7 +56,7 @@ function createSequence(initialMessage, nextMessage, btn1, btn1Text, btn2, btn2T
             renderButtons(btn1, btn1Text, btn2, btn2Text);
         }, 3000);
     };
-
+    
     clickHandler = showNext;
 
     setTimeout(() => {
