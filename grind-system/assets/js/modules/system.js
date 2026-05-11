@@ -18,9 +18,7 @@ function setStatus(status) {
     localStorage.setItem('status', status);
 }
 
-function redirect(page) {
-    window.location.replace(page);
-}
+// (Redirect logic handled globally by router.js)
 
 // ─────────────────────────────────────────
 //  RENDER FUNCTIONS
@@ -77,21 +75,21 @@ function setupEventListeners() {
     if (acceptBtn) {
         acceptBtn.addEventListener('click', () => {
             setStatus('accepted');
-            redirect('dashboard.html');
-        });
-    }
-
-    if (refuseBtn) {
-        refuseBtn.addEventListener('click', () => {
-            setStatus('rejected');
-            redirect('rejected.html');
+            location.reload(); // router.js will catch this and redirect
         });
     }
 
     if (reAcceptBtn) {
         reAcceptBtn.addEventListener('click', () => {
             setStatus('accepted');
-            redirect('dashboard.html');
+            location.reload();
+        });
+    }
+
+    if (refuseBtn) {
+        refuseBtn.addEventListener('click', () => {
+            setStatus('rejected');
+            location.reload();
         });
     }
 

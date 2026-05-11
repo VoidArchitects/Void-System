@@ -65,7 +65,6 @@ const quests = [
 // ─────────────────────────────────────────
 function setQuestStatus(id, status) {
     localStorage.setItem(id, status);
-    renderQuests();
 }
 
 function getQuestStatus(id) {
@@ -114,6 +113,7 @@ function acceptQuest(id) {
 
     if (getQuestStatus(id) === "available") {
         setQuestStatus(id, "active");
+        renderQuests();
     } else {
         renderSystemMessage(systemMessage, "Quest is not available.");
     }
@@ -125,6 +125,7 @@ function completeQuest(id) {
 
     if (getQuestStatus(id) === "active") {
         setQuestStatus(id, "completed");
+        renderQuests();
         gainXp(quest.reward.xp);
     } else {
         renderSystemMessage(systemMessage, "Quest is not active.");
@@ -134,34 +135,37 @@ function completeQuest(id) {
 // ─────────────────────────────────────────
 //  INITIALIZATION
 // ─────────────────────────────────────────
-function initQuests() {
-    // 1. Initialize missing localStorage data without triggering re-renders
-    for (let i = 0; i < quests.length; i++) {
-        if (getQuestStatus(quests[i].id) === null) {
-            localStorage.setItem(quests[i].id, quests[i].status);
+function syncQuestStorage() {
+    quests.forEach(quest => {
+        if (getQuestStatus(quest.id) === null) {
+            setQuestStatus(quest.id, quest.status);
         }
-    }
+    });
+}
 
-    // 2. Set up Event Delegation for all quest buttons (No inline events!)
-    const questsContainer = document.getElementById('quests');
-    if (questsContainer) {
-        questsContainer.addEventListener('click', (event) => {
-            // Check if what was clicked was a quest button
-            if (event.target.classList.contains('quest-btn')) {
-                const action = event.target.getAttribute('data-action');
-                const questId = event.target.getAttribute('data-id');
+function setupQuestListeners() {
+    const container = document.getElementById('quests');
+    if (!container) return; // Exit if the quests container isn't on the page
 
-                if (action === 'accept') {
-                    acceptQuest(questId);
-                } else if (action === 'complete') {
-                    completeQuest(questId);
-                }
-            }
-        });
-    }
+    container.addEventListener('click', (event) => {
+        const target = event.target;
+        
+        // Ignore clicks that aren't on quest buttons
+        if (!target.classList.contains('quest-btn')) return;
 
-    // 3. Paint the UI
-    renderQuests();
+        const action = target.getAttribute('data-action');
+        const id = target.getAttribute('data-id');
+
+        // Route the button click to the right function
+        if (action === 'accept') acceptQuest(id);
+        if (action === 'complete') completeQuest(id);
+    });
+}
+
+function initQuests() {
+    syncQuestStorage();    // 1. Ensure LocalStorage has default states
+    setupQuestListeners(); // 2. Listen for accept/complete button clicks
+    renderQuests();        // 3. Draw the initial UI
 }
 
 // Start the module!
