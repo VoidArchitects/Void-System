@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYSTEM LOCKED</title>
+    <!-- Importing Orbitron for consistency if you use it -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            background: #000; 
+            color: #f00; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+            font-family: "Orbitron", monospace; 
+            text-align: center; 
+            text-shadow: 0 0 10px #f00; 
+        }
+        .locked-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .locked-subtitle {
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="locked-title">[ SYSTEM LOCKED ]</div>
+        <div class="locked-subtitle">ACCESS PERMANENTLY REVOKED</div>
+    </div>
+    
+    <!-- We still need the router here so if state changes it routes away, but usually banned is permanent -->
+    <script src="assets/js/router.js"></script>
+</body>
+</html>
