@@ -1,105 +1,88 @@
 // ─────────────────────────────────────────
-//  STATE / DATA
-
+//  DOM ELEMENTS
 // ─────────────────────────────────────────
-// State Variables
 
-// DOM Elements
-const userxp = document.getElementById('xp');
+const userxp = document.getElementById("xp");
+const userlevel = document.getElementById("userlevel");
 const systemMessage = document.getElementById("systemMessage");
-const addxp = document.getElementById('addXp');
-const userlevel = document.getElementById('userlevel');
+const addxpBtn = document.getElementById("addXp");
+
 
 // ─────────────────────────────────────────
-//  HELPER FUNCTIONS
+//  RENDER SYSTEM
 // ─────────────────────────────────────────
-function getXp() {
-    if (localStorage.getItem('xp') === null) {
-        return null
-    }
-    else {
-        return Number(localStorage.getItem('xp'));
-    }
-}
 
-function setXp(xp) {
-    localStorage.setItem('xp', xp);
-}
-
-function addXp(add) {
-    localStorage.setItem('xp', getXp() + add);
-}
-
-// ─────────────────────────────────────────
-//  RENDER FUNCTIONS
 function renderXp() {
-    //upadte every xp related thing
-    userxp.innerHTML = getXp();
-}
-function renderSystemMessage(x, y) {
-    x.innerHTML = y;
+    userxp.innerText = playerData.xp;
 }
 
 function renderLevel() {
-    userlevel.innerHTML = "level : " + getLevel();
+    userlevel.innerText = "Level: " + getLevel();
 }
 
-function renderPlayerStats(){
+function renderSystemMessage(message) {
+    systemMessage.innerText = message;
+}
+
+function renderPlayerStats() {
     renderXp();
     renderLevel();
 }
-// ─────────────────────────────────────────
-// (Add UI rendering functions here)
+
 
 // ─────────────────────────────────────────
-//  LOGIC FUNCTIONS
+//  GAME LOGIC
 // ─────────────────────────────────────────
-function gainXp(xpAmount) {
-    let oldLevel = getLevel();
-    addXp(xpAmount);
-    let currentLevel = getLevel();
-    if(currentLevel > oldLevel){
-        levelUp();
+
+function getLevel() {
+    return getLevelFromXp(playerData.xp);
+}
+
+function gainXp(amount) {
+    const oldLevel = getLevel();
+
+    addXp(amount); // from storage.js
+
+    const newLevel = getLevel();
+
+    if (newLevel > oldLevel) {
+        levelUp(newLevel);
     }
+
     renderPlayerStats();
 }
 
-function getLevel() {
-    if (getXp() > 0) {
-        return Math.trunc(getXp() / 100) + 1;
-    }
-    else {
-        return 1;
-    }
+function levelUp(level) {
+    renderSystemMessage("LEVEL UP! You reached Level " + level);
+
+    userlevel.style.color = "#00ffcc";
+    setTimeout(() => {
+        userlevel.style.color = "";
+    }, 1000);
 }
 
-function levelUp() {
-    renderSystemMessage(systemMessage, "LEVEL UP! You are now level " + getLevel());
-    // Add visual effect class if you have one
-    userlevel.style.color = '#00ffcc';
-    setTimeout(() => userlevel.style.color = '', 1000);
-}
 
 // ─────────────────────────────────────────
-//  EVENT LISTENERS
+//  EVENTS
 // ─────────────────────────────────────────
-addxp.addEventListener('click', () => {
+
+addxpBtn.addEventListener("click", () => {
     gainXp(5);
 });
 
-// ─────────────────────────────────────────
-//  INITIALIZATION
-// ─────────────────────────────────────────
-// Run on page load
 
-function initializePlayer() {
-    if (getXp() === null) {
-        renderSystemMessage(systemMessage, "Welcome!");
-        setXp(0);
-    }
-    else {
-        renderSystemMessage(systemMessage, "I commend your determination!");
-    }
+// ─────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────
+
+function initializeHome() {
     renderPlayerStats();
+
+    if (playerData.xp === 0) {
+        renderSystemMessage("Welcome, Player.");
+    } else {
+        renderSystemMessage("System recognizes your progress.");
+    }
 }
-initializePlayer();
+
+initializeHome();
