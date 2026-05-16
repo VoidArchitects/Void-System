@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VOID SYSTEM — TRAINING PROTOCOL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../assets/css/main.css" />
+    <link rel="stylesheet" href="../assets/css/theme.css" />
+    <link rel="stylesheet" href="../assets/css/components.css" />
+    <link rel="stylesheet" href="../assets/css/workout.css" />
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="void-nav">
+        <a href="../pages/dashboard.html" class="nav-logo">VOID SYSTEM</a>
+        <ul class="nav-links">
+            <li><a href="../pages/dashboard.html">HOME</a></li>
+            <li><a href="../pages/quests.html">QUESTS</a></li>
+            <li><a href="../pages/workout.html" class="active">TRAIN</a></li>
+            <li><a href="../pages/profile.html">PROFILE</a></li>
+            <li><a href="../pages/progress.html">PROGRESS</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Workout Root -->
+    <main class="workout-page">
+        <div id="workout-root">
+            <!-- workout.js injects all content here -->
+            <div style="display:flex;align-items:center;justify-content:center;min-height:60vh;">
+                <span style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);letter-spacing:0.2em;">
+                    INITIALIZING PROTOCOL...
+                </span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Storage (single source of truth — adjust path as needed) -->
+    <script type="module" src="../assets/js/storage.js"></script>
+    <script type="module" src="../assets/js/modules/workout.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1021 @@
+/* ─── VOID SYSTEM — workout.css (embedded) ─── */
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --void-black: #040408;
+            --void-dark: #0a0a12;
+            --void-panel: #0e0e1a;
+            --void-border: rgba(255, 255, 255, 0.07);
+            --void-border2: rgba(255, 255, 255, 0.12);
+            --accent: #7b5cfa;
+            --accent-glow: rgba(123, 92, 250, 0.35);
+            --accent-dim: rgba(123, 92, 250, 0.15);
+            --text-primary: #e8e8f0;
+            --text-dim: #6b6b88;
+            --text-muted: #3a3a55;
+            --success: #44ffaa;
+            --warning: #ffaa44;
+            --danger: #ff4466;
+            --info: #44aaff;
+            --font-display: 'Orbitron', sans-serif;
+            --font-ui: 'Rajdhani', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        html,
+        body {
+            background: var(--void-black);
+            color: var(--text-primary);
+            font-family: var(--font-ui);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ─── VOID GRID BACKGROUND ─── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(123, 92, 250, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(123, 92, 250, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ─── NAV ─── */
+        .void-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 56px;
+            background: rgba(4, 4, 8, 0.92);
+            border-bottom: 1px solid var(--void-border);
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+        }
+
+        .nav-logo {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            text-decoration: none;
+            letter-spacing: 0.1em;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--accent);
+        }
+
+        /* ─── PAGE WRAPPER ─── */
+        .workout-page {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            padding: 80px 24px 48px;
+            max-width: 740px;
+            margin: 0 auto;
+        }
+
+        /* ─── SCREEN TAG / HEADER ─── */
+        .workout-screen-tag {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--accent);
+            letter-spacing: 0.2em;
+            margin-bottom: 8px;
+            opacity: 0.8;
+        }
+
+        .workout-screen-title {
+            font-family: var(--font-display);
+            font-size: clamp(26px, 5vw, 40px);
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: 0.08em;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .accent {
+            color: var(--accent);
+        }
+
+        .workout-screen-sub {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-dim);
+            margin-bottom: 40px;
+        }
+
+        /* ─── TYPE SELECTION ─── */
+        .workout-select-screen {
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .workout-header-block {
+            margin-bottom: 32px;
+        }
+
+        .workout-type-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+
+        .workout-type-card {
+            position: relative;
+            background: var(--void-panel);
+            border: 1px solid var(--void-border);
+            border-radius: 4px;
+            padding: 24px 20px;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow: hidden;
+            transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+        }
+
+        .workout-type-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--type-color, var(--accent));
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .workout-type-card:hover {
+            border-color: var(--type-color, var(--accent));
+            transform: translateY(-2px);
+            box-shadow: 0 0 24px rgba(0, 0, 0, 0.4), 0 0 0 1px var(--type-color, var(--accent));
+        }
+
+        .workout-type-card:hover::before {
+            opacity: 1;
+        }
+
+        .type-card-shine {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .type-glyph {
+            font-size: 22px;
+            color: var(--type-color, var(--accent));
+            line-height: 1;
+        }
+
+        .type-label {
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.15em;
+        }
+
+        .type-desc {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 0.05em;
+        }
+
+        /* ─── HISTORY PREVIEW ─── */
+        .workout-history-preview {
+            margin-top: 8px;
+        }
+
+        .history-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            margin-bottom: 10px;
+        }
+
+        .last-session-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: var(--void-panel);
+            border: 1px solid var(--void-border);
+            border-left: 3px solid var(--type-color, var(--accent));
+            border-radius: 4px;
+            padding: 14px 16px;
+        }
+
+        .ls-glyph {
+            font-size: 20px;
+            color: var(--type-color, var(--accent));
+        }
+
+        .ls-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .ls-type {
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.15em;
+        }
+
+        .ls-date {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .ls-exercises {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+        }
+
+        .no-history {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 16px;
+            text-align: center;
+            border: 1px dashed var(--void-border);
+            border-radius: 4px;
+        }
+
+        /* ─── CONFIRM SCREEN ─── */
+        .workout-confirm-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            gap: 20px;
+            text-align: center;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        .confirm-type-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 40px;
+            border: 1px solid var(--type-color, var(--accent));
+            border-radius: 4px;
+            background: var(--void-panel);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .confirm-glyph {
+            font-size: 56px;
+            color: var(--type-color, var(--accent));
+            filter: drop-shadow(0 0 16px var(--type-color, var(--accent)));
+            animation: glyphPulse 2s ease-in-out infinite;
+        }
+
+        .confirm-label {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: 0.2em;
+        }
+
+        .confirm-desc {
+            font-family: var(--font-mono);
+            font-size: 13px;
+            color: var(--text-dim);
+        }
+
+        .confirm-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 280px;
+        }
+
+        /* ─── BUTTONS ─── */
+        .btn-void {
+            font-family: var(--font-display);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            border: none;
+            cursor: pointer;
+            border-radius: 2px;
+            padding: 14px 24px;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-start {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 24px var(--accent-glow);
+        }
+
+        .btn-start:hover {
+            background: #9070ff;
+            box-shadow: 0 0 36px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--text-dim);
+            border: 1px solid var(--void-border2);
+        }
+
+        .btn-back:hover {
+            color: var(--text-primary);
+            border-color: var(--text-dim);
+        }
+
+        .btn-finish {
+            background: var(--success);
+            color: #000;
+            box-shadow: 0 0 24px rgba(68, 255, 170, 0.3);
+            flex: 1;
+        }
+
+        .btn-finish:hover {
+            box-shadow: 0 0 40px rgba(68, 255, 170, 0.5);
+            transform: translateY(-1px);
+        }
+
+        .btn-abandon {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid rgba(255, 68, 102, 0.3);
+            padding: 14px 20px;
+        }
+
+        .btn-abandon:hover {
+            background: rgba(255, 68, 102, 0.08);
+            border-color: var(--danger);
+        }
+
+        /* ─── SESSION SCREEN ─── */
+        .workout-session-screen {
+            animation: fadeUp 0.35s ease both;
+        }
+
+        .session-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            background: var(--void-panel);
+            border: 1px solid var(--void-border);
+            border-left: 3px solid var(--type-color, var(--accent));
+            border-radius: 4px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .session-type-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--type-color, var(--accent));
+            letter-spacing: 0.15em;
+        }
+
+        .session-timer-wrap,
+        .session-xp-live {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .timer-label,
+        .xp-label {
+            font-family: var(--font-mono);
+            font-size: 9px;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+        }
+
+        .session-timer {
+            font-family: var(--font-mono);
+            font-size: 22px;
+            color: var(--text-primary);
+            letter-spacing: 0.1em;
+        }
+
+        .xp-value {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        /* ─── PROGRESS BAR ─── */
+        .session-progress-bar {
+            position: relative;
+            height: 28px;
+            background: var(--void-panel);
+            border: 1px solid var(--void-border);
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .session-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #aa88ff);
+            transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .session-progress-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-primary);
+            letter-spacing: 0.1em;
+            mix-blend-mode: difference;
+        }
+
+        /* ─── EXERCISE LIST ─── */
+        .exercise-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        /* ─── EXERCISE CARD ─── */
+        .exercise-card {
+            background: var(--void-panel);
+            border: 1px solid var(--void-border);
+            border-radius: 4px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+            animation: cardSlideIn 0.4s ease both;
+            animation-delay: var(--delay, 0s);
+            transition: border-color 0.2s;
+        }
+
+        .exercise-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--type-color, var(--accent));
+            opacity: 0.6;
+        }
+
+        .exercise-card.complete {
+            border-color: rgba(68, 255, 170, 0.2);
+            opacity: 0.8;
+        }
+
+        .exercise-card.complete::before {
+            background: var(--success);
+            opacity: 1;
+        }
+
+        .exercise-card.skipped {
+            border-color: rgba(255, 170, 68, 0.2);
+            opacity: 0.5;
+        }
+
+        .exercise-card.skipped::before {
+            background: var(--warning);
+        }
+
+        .exercise-card.just-completed {
+            animation: flashComplete 0.6s ease;
+        }
+
+        .ex-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .ex-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .ex-index {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            flex-shrink: 0;
+        }
+
+        .ex-name-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .ex-name {
+            font-family: var(--font-ui);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: 0.02em;
+        }
+
+        .ex-muscle {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 0.1em;
+        }
+
+        .ex-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .ex-sets-reps {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .ex-sets-done {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--accent);
+        }
+
+        .ex-status-badge {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            padding: 3px 8px;
+            border-radius: 2px;
+        }
+
+        .badge-done {
+            background: rgba(68, 255, 170, 0.12);
+            color: var(--success);
+            border: 1px solid rgba(68, 255, 170, 0.25);
+        }
+
+        .badge-skip {
+            background: rgba(255, 170, 68, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(255, 170, 68, 0.2);
+        }
+
+        /* ─── SET TRACKER DOTS ─── */
+        .ex-set-tracker {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .set-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 2px;
+            border: 1px solid var(--void-border2);
+            background: var(--void-dark);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: default;
+        }
+
+        .set-dot.set-done {
+            background: var(--type-color, var(--accent));
+            border-color: var(--type-color, var(--accent));
+            box-shadow: 0 0 10px var(--type-color, var(--accent-glow));
+        }
+
+        /* ─── EXERCISE ACTIONS ─── */
+        .ex-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-set-complete {
+            flex: 1;
+            background: var(--accent-dim);
+            border: 1px solid rgba(123, 92, 250, 0.35);
+            color: var(--accent);
+            font-family: var(--font-display);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            padding: 10px 16px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-set-complete:hover {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 0 16px var(--accent-glow);
+        }
+
+        .btn-skip-exercise {
+            background: transparent;
+            border: 1px solid var(--void-border2);
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 10px 14px;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.1em;
+        }
+
+        .btn-skip-exercise:hover {
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        /* ─── COMPLETE OVERLAY ─── */
+        .ex-complete-overlay {
+            text-align: center;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.2em;
+            padding: 8px 0;
+        }
+
+        .exercise-card.complete .ex-complete-overlay {
+            color: var(--success);
+        }
+
+        /* ─── FLOATING XP ─── */
+        .ex-xp-float {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            pointer-events: none;
+            opacity: 0;
+            transform: translateY(0);
+            transition: none;
+        }
+
+        .ex-xp-float.xp-float-active {
+            animation: floatXP 1.2s ease-out forwards;
+        }
+
+        /* ─── SESSION ACTIONS ─── */
+        .session-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* ─── COMPLETION SCREEN ─── */
+        .completion-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 28px;
+            padding: 20px 0 40px;
+            animation: fadeUp 0.5s ease both;
+            text-align: center;
+        }
+
+        .completion-pulse {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--type-color, var(--accent)), transparent 70%);
+            opacity: 0.08;
+            animation: completionPulse 2s ease-out both;
+            pointer-events: none;
+        }
+
+        .completion-rank-glyph {
+            font-size: 64px;
+            filter: drop-shadow(0 0 24px var(--accent));
+            animation: glyphPulse 1.5s ease-in-out infinite;
+        }
+
+        .completion-title {
+            font-family: var(--font-display);
+            font-size: clamp(28px, 6vw, 48px);
+            font-weight: 900;
+            color: var(--text-primary);
+            letter-spacing: 0.1em;
+        }
+
+        .completion-sub {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+            letter-spacing: 0.2em;
+            margin-top: -20px;
+        }
+
+        .completion-stats {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .stat-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            min-width: 80px;
+        }
+
+        .stat-value {
+            font-family: var(--font-display);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .stat-value.accent {
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-family: var(--font-mono);
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+        }
+
+        /* ─── LEVEL BAR ─── */
+        .completion-level-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .level-label {
+            font-family: var(--font-mono);
+            font-size: 11px;
+            color: var(--text-dim);
+            white-space: nowrap;
+        }
+
+        .level-bar-track {
+            flex: 1;
+            height: 6px;
+            background: var(--void-panel);
+            border: 1px solid var(--void-border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .level-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #aa88ff);
+            border-radius: 3px;
+            transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* ─── CUSTOM BUILDER ─── */
+        .custom-builder-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 50vh;
+            gap: 16px;
+            text-align: center;
+            animation: fadeUp 0.3s ease both;
+        }
+
+        /* ─── SYSTEM TOAST ─── */
+        .system-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(60px);
+            background: var(--void-panel);
+            border: 1px solid var(--void-border2);
+            border-radius: 4px;
+            padding: 12px 24px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-primary);
+            letter-spacing: 0.1em;
+            z-index: 9999;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+            opacity: 0;
+            white-space: nowrap;
+        }
+
+        .system-toast.toast-visible {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            border-color: rgba(68, 255, 170, 0.4);
+            color: var(--success);
+        }
+
+        .toast-warning {
+            border-color: rgba(255, 170, 68, 0.4);
+            color: var(--warning);
+        }
+
+        .toast-error {
+            border-color: rgba(255, 68, 102, 0.4);
+            color: var(--danger);
+        }
+
+        .toast-info {
+            border-color: rgba(68, 170, 255, 0.4);
+            color: var(--info);
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cardSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes floatXP {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-32px);
+            }
+        }
+
+        @keyframes glyphPulse {
+
+            0%,
+            100% {
+                filter: drop-shadow(0 0 12px currentColor);
+            }
+
+            50% {
+                filter: drop-shadow(0 0 28px currentColor);
+            }
+        }
+
+        @keyframes flashComplete {
+            0% {
+                background: rgba(68, 255, 170, 0.12);
+            }
+
+            100% {
+                background: var(--void-panel);
+            }
+        }
+
+        @keyframes completionPulse {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+
+            50% {
+                opacity: 0.12;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(2);
+            }
+        }
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--void-black);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--void-border2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 480px) {
+            .session-header {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+
+            .workout-type-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .completion-stats {
+                gap: 16px;
+            }
+        }
