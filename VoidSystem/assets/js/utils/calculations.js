@@ -10,14 +10,27 @@ import { XP_CONSTANTS, RANKS, BMI_CATEGORIES } from './constants.js';
 // ─────────────────────────────────────────────
 
 /**
- * Calculate XP required for a specific level
- * Formula: baseXP * (level ^ exponent)
+ * Calculate total cumulative XP required to reach a specific level
+ * Uses piecewise quadratic/cubic formulas for different game stages
  * @param {number} level - Target level
  * @returns {number} Total XP required to reach that level
  */
 export function calculateXPForLevel(level) {
   if (level <= 1) return 0;
-  return Math.floor(XP_CONSTANTS.BASE_XP * Math.pow(level, XP_CONSTANTS.XP_EXPONENT));
+  
+  let cumulative = 0;
+  if (level <= 21) {
+    // Early Game: Gentle curve to get players hooked
+    cumulative = 368.415 * Math.pow(level, 2) + 263.3 * level - 631.715;
+  } else if (level <= 41) {
+    // Mid Game: Steeper quadratic curve
+    cumulative = 2236.845 * Math.pow(level, 2) - 78947.5 * level + 838817.455;
+  } else {
+    // Late Game: Cubic curve for the long grind
+    cumulative = 0.001894 * Math.pow(level, 3) + 10526.14 * Math.pow(level, 2) - 763150 * level + 14956684.52;
+  }
+  
+  return Math.max(0, Math.floor(cumulative));
 }
 
 /**
@@ -118,7 +131,7 @@ export function getRankFromLevel(level) {
       return rankKey;
     }
   }
-  return 'E';
+  return level > 999 ? 'S' : 'E';
 }
 
 /**
@@ -156,7 +169,7 @@ export function levelsUntilNextRank(level) {
   
   if (rank === 'S') return 0; // Already max rank
   
-  return rankInfo.maxLevel - level;
+  return rankInfo.maxLevel - level + 1;
 }
 
 // ─────────────────────────────────────────────
@@ -170,7 +183,9 @@ export function levelsUntilNextRank(level) {
  */
 export function calculateTotalStats(stats) {
   if (!stats || typeof stats !== 'object') return 0;
-  return Object.values(stats).reduce((sum, val) => sum + (val || 0), 0);
+  return Object.values(stats)
+    .filter(v => typeof v === 'number')
+    .reduce((sum, val) => sum + (val || 0), 0);
 }
 
 /**
@@ -208,11 +223,16 @@ export function calculateStatPointsFromLevel(level) {
  * @returns {number} Days difference
  */
 export function calculateDaysBetween(date1, date2) {
-  const d1 = typeof date1 === 'string' ? new Date(date1) : date1;
-  const d2 = typeof date2 === 'string' ? new Date(date2) : date2;
+  // Use new Date objects so we don't mutate the originals
+  const d1 = typeof date1 === 'string' ? new Date(date1) : new Date(date1.getTime());
+  const d2 = typeof date2 === 'string' ? new Date(date2) : new Date(date2.getTime());
+  
+  // Reset time to compare strict calendar days
+  d1.setHours(0, 0, 0, 0);
+  d2.setHours(0, 0, 0, 0);
   
   const diffTime = Math.abs(d2 - d1);
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
   
   return diffDays;
 }
@@ -268,13 +288,13 @@ export function calculateBMI(weightKg, heightCm) {
  * @returns {Object} Category info
  */
 export function getBMICategory(bmi) {
-  if (bmi < BMI_CATEGORIES.UNDERWEIGHT.max) {
+  if (bmi <= BMI_CATEGORIES.UNDERWEIGHT.max) {
     return BMI_CATEGORIES.UNDERWEIGHT;
   }
-  if (bmi < BMI_CATEGORIES.NORMAL.max) {
+  if (bmi <= BMI_CATEGORIES.NORMAL.max) {
     return BMI_CATEGORIES.NORMAL;
   }
-  if (bmi < BMI_CATEGORIES.OVERWEIGHT.max) {
+  if (bmi <= BMI_CATEGORIES.OVERWEIGHT.max) {
     return BMI_CATEGORIES.OVERWEIGHT;
   }
   return BMI_CATEGORIES.OBESE;
@@ -286,9 +306,9 @@ export function getBMICategory(bmi) {
  * @returns {Object} { feet, inches }
  */
 export function cmToFeetInches(cm) {
-  const totalInches = cm / 2.54;
+  const totalInches = Math.round(cm / 2.54);
   const feet = Math.floor(totalInches / 12);
-  const inches = Math.round(totalInches % 12);
+  const inches = totalInches % 12;
   return { feet, inches };
 }
 
