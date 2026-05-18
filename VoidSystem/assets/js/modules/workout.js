@@ -10,50 +10,50 @@ import { Storage } from '../storage.js';
 // ─────────────────────────────────────────────
 
 const XP_REWARDS = {
-    SET_COMPLETE: 10,
-    EXERCISE_COMPLETE: 25,
-    WORKOUT_COMPLETE: 100,
-    BONUS_ALL_SETS: 15,      // per exercise if all sets done
-    STREAK_MULTIPLIER: 0.1,  // 10% bonus per streak day (capped at 50%)
+  SET_COMPLETE: 10,
+  EXERCISE_COMPLETE: 25,
+  WORKOUT_COMPLETE: 100,
+  BONUS_ALL_SETS: 15,      // per exercise if all sets done
+  STREAK_MULTIPLIER: 0.1,  // 10% bonus per streak day (capped at 50%)
 };
 
 const WORKOUT_TYPES = {
-    push: {
-        label: 'PUSH',
-        color: '#ff4444',
-        glyph: '▲',
-        description: 'Chest · Shoulders · Triceps',
-    },
-    pull: {
-        label: 'PULL',
-        color: '#4488ff',
-        glyph: '▼',
-        description: 'Back · Biceps · Rear Delts',
-    },
-    legs: {
-        label: 'LEGS',
-        color: '#aa44ff',
-        glyph: '◆',
-        description: 'Quads · Hamstrings · Glutes · Calves',
-    },
-    fullBody: {
-        label: 'FULL BODY',
-        color: '#44ffaa',
-        glyph: '✦',
-        description: 'Compound · Multi-Muscle',
-    },
-    cardio: {
-        label: 'CARDIO',
-        color: '#ffaa44',
-        glyph: '◉',
-        description: 'Endurance · Heart Rate · Burn',
-    },
-    custom: {
-        label: 'CUSTOM',
-        color: '#ffffff',
-        glyph: '★',
-        description: 'Your own protocol',
-    },
+  push: {
+    label: 'PUSH',
+    color: '#ff4444',
+    glyph: '▲',
+    description: 'Chest · Shoulders · Triceps',
+  },
+  pull: {
+    label: 'PULL',
+    color: '#4488ff',
+    glyph: '▼',
+    description: 'Back · Biceps · Rear Delts',
+  },
+  legs: {
+    label: 'LEGS',
+    color: '#aa44ff',
+    glyph: '◆',
+    description: 'Quads · Hamstrings · Glutes · Calves',
+  },
+  fullBody: {
+    label: 'FULL BODY',
+    color: '#44ffaa',
+    glyph: '✦',
+    description: 'Compound · Multi-Muscle',
+  },
+  cardio: {
+    label: 'CARDIO',
+    color: '#ffaa44',
+    glyph: '◉',
+    description: 'Endurance · Heart Rate · Burn',
+  },
+  custom: {
+    label: 'CUSTOM',
+    color: '#ffffff',
+    glyph: '★',
+    description: 'Your own protocol',
+  },
 };
 
 // ─────────────────────────────────────────────
@@ -61,12 +61,12 @@ const WORKOUT_TYPES = {
 // ─────────────────────────────────────────────
 
 const WorkoutState = {
-    activeSession: null,   // current live workout session
-    selectedType: null,
-    exercises: [],         // loaded from workouts.json
-    isSessionActive: false,
-    sessionStartTime: null,
-    timerInterval: null,
+  activeSession: null,   // current live workout session
+  selectedType: null,
+  exercises: [],         // loaded from workouts.json
+  isSessionActive: false,
+  sessionStartTime: null,
+  timerInterval: null,
 };
 
 // ─────────────────────────────────────────────
@@ -74,55 +74,55 @@ const WorkoutState = {
 // ─────────────────────────────────────────────
 
 async function loadWorkoutData(type) {
-    try {
-        const res = await fetch('../data/workouts.json');
-        const data = await res.json();
-        return data[type] || [];
-    } catch (err) {
-        console.error('[VOID] Failed to load workout data:', err);
-        return getFallbackExercises(type);
-    }
+  try {
+    const res = await fetch('../data/workouts.json');
+    const data = await res.json();
+    return data[type] || [];
+  } catch (err) {
+    console.error('[VOID] Failed to load workout data:', err);
+    return getFallbackExercises(type);
+  }
 }
 
 function getFallbackExercises(type) {
-    const fallbacks = {
-        push: [
-            { id: 'bench', name: 'Bench Press', sets: 4, reps: '8–10', muscle: 'Chest' },
-            { id: 'ohp', name: 'Overhead Press', sets: 3, reps: '8–10', muscle: 'Shoulders' },
-            { id: 'incline', name: 'Incline Dumbbell Press', sets: 3, reps: '10–12', muscle: 'Upper Chest' },
-            { id: 'lateral', name: 'Lateral Raises', sets: 3, reps: '12–15', muscle: 'Side Delts' },
-            { id: 'tricep_push', name: 'Tricep Pushdown', sets: 3, reps: '12–15', muscle: 'Triceps' },
-        ],
-        pull: [
-            { id: 'deadlift', name: 'Deadlift', sets: 4, reps: '5–6', muscle: 'Full Back' },
-            { id: 'row', name: 'Barbell Row', sets: 4, reps: '8–10', muscle: 'Mid Back' },
-            { id: 'pullup', name: 'Pull-Ups', sets: 3, reps: '6–10', muscle: 'Lats' },
-            { id: 'curl', name: 'Barbell Curl', sets: 3, reps: '10–12', muscle: 'Biceps' },
-            { id: 'facepull', name: 'Face Pulls', sets: 3, reps: '15–20', muscle: 'Rear Delts' },
-        ],
-        legs: [
-            { id: 'squat', name: 'Back Squat', sets: 4, reps: '6–8', muscle: 'Quads' },
-            { id: 'rdl', name: 'Romanian Deadlift', sets: 3, reps: '10–12', muscle: 'Hamstrings' },
-            { id: 'legpress', name: 'Leg Press', sets: 3, reps: '12–15', muscle: 'Quads' },
-            { id: 'legcurl', name: 'Leg Curl', sets: 3, reps: '12–15', muscle: 'Hamstrings' },
-            { id: 'calfraise', name: 'Calf Raises', sets: 4, reps: '15–20', muscle: 'Calves' },
-        ],
-        fullBody: [
-            { id: 'squat_fb', name: 'Squat', sets: 3, reps: '8–10', muscle: 'Legs' },
-            { id: 'bench_fb', name: 'Bench Press', sets: 3, reps: '8–10', muscle: 'Chest' },
-            { id: 'row_fb', name: 'Bent Over Row', sets: 3, reps: '8–10', muscle: 'Back' },
-            { id: 'press_fb', name: 'Overhead Press', sets: 3, reps: '8–10', muscle: 'Shoulders' },
-            { id: 'rdl_fb', name: 'Romanian Deadlift', sets: 3, reps: '10–12', muscle: 'Hamstrings' },
-        ],
-        cardio: [
-            { id: 'run', name: 'Treadmill Run', sets: 1, reps: '20 min', muscle: 'Cardiovascular' },
-            { id: 'bike', name: 'Stationary Bike', sets: 1, reps: '15 min', muscle: 'Cardiovascular' },
-            { id: 'jumprope', name: 'Jump Rope', sets: 5, reps: '2 min', muscle: 'Full Body' },
-            { id: 'burpees', name: 'Burpees', sets: 4, reps: '15', muscle: 'Full Body' },
-        ],
-        custom: [],
-    };
-    return fallbacks[type] || [];
+  const fallbacks = {
+    push: [
+      { id: 'bench', name: 'Bench Press', sets: 4, reps: '8–10', muscle: 'Chest' },
+      { id: 'ohp', name: 'Overhead Press', sets: 3, reps: '8–10', muscle: 'Shoulders' },
+      { id: 'incline', name: 'Incline Dumbbell Press', sets: 3, reps: '10–12', muscle: 'Upper Chest' },
+      { id: 'lateral', name: 'Lateral Raises', sets: 3, reps: '12–15', muscle: 'Side Delts' },
+      { id: 'tricep_push', name: 'Tricep Pushdown', sets: 3, reps: '12–15', muscle: 'Triceps' },
+    ],
+    pull: [
+      { id: 'deadlift', name: 'Deadlift', sets: 4, reps: '5–6', muscle: 'Full Back' },
+      { id: 'row', name: 'Barbell Row', sets: 4, reps: '8–10', muscle: 'Mid Back' },
+      { id: 'pullup', name: 'Pull-Ups', sets: 3, reps: '6–10', muscle: 'Lats' },
+      { id: 'curl', name: 'Barbell Curl', sets: 3, reps: '10–12', muscle: 'Biceps' },
+      { id: 'facepull', name: 'Face Pulls', sets: 3, reps: '15–20', muscle: 'Rear Delts' },
+    ],
+    legs: [
+      { id: 'squat', name: 'Back Squat', sets: 4, reps: '6–8', muscle: 'Quads' },
+      { id: 'rdl', name: 'Romanian Deadlift', sets: 3, reps: '10–12', muscle: 'Hamstrings' },
+      { id: 'legpress', name: 'Leg Press', sets: 3, reps: '12–15', muscle: 'Quads' },
+      { id: 'legcurl', name: 'Leg Curl', sets: 3, reps: '12–15', muscle: 'Hamstrings' },
+      { id: 'calfraise', name: 'Calf Raises', sets: 4, reps: '15–20', muscle: 'Calves' },
+    ],
+    fullBody: [
+      { id: 'squat_fb', name: 'Squat', sets: 3, reps: '8–10', muscle: 'Legs' },
+      { id: 'bench_fb', name: 'Bench Press', sets: 3, reps: '8–10', muscle: 'Chest' },
+      { id: 'row_fb', name: 'Bent Over Row', sets: 3, reps: '8–10', muscle: 'Back' },
+      { id: 'press_fb', name: 'Overhead Press', sets: 3, reps: '8–10', muscle: 'Shoulders' },
+      { id: 'rdl_fb', name: 'Romanian Deadlift', sets: 3, reps: '10–12', muscle: 'Hamstrings' },
+    ],
+    cardio: [
+      { id: 'run', name: 'Treadmill Run', sets: 1, reps: '20 min', muscle: 'Cardiovascular' },
+      { id: 'bike', name: 'Stationary Bike', sets: 1, reps: '15 min', muscle: 'Cardiovascular' },
+      { id: 'jumprope', name: 'Jump Rope', sets: 5, reps: '2 min', muscle: 'Full Body' },
+      { id: 'burpees', name: 'Burpees', sets: 4, reps: '15', muscle: 'Full Body' },
+    ],
+    custom: [],
+  };
+  return fallbacks[type] || [];
 }
 
 // ─────────────────────────────────────────────
@@ -130,146 +130,146 @@ function getFallbackExercises(type) {
 // ─────────────────────────────────────────────
 
 async function startSession(type) {
-    if (WorkoutState.isSessionActive) return;
+  if (WorkoutState.isSessionActive) return;
 
-    const exercises = await loadWorkoutData(type);
+  const exercises = await loadWorkoutData(type);
 
-    WorkoutState.activeSession = {
-        type,
-        exercises: exercises.map(ex => ({
-            ...ex,
-            completedSets: 0,
-            isComplete: false,
-        })),
-        startTime: Date.now(),
-        xpEarned: 0,
-        completedExercises: 0,
-    };
+  WorkoutState.activeSession = {
+    type,
+    exercises: exercises.map(ex => ({
+      ...ex,
+      completedSets: 0,
+      isComplete: false,
+    })),
+    startTime: Date.now(),
+    xpEarned: 0,
+    completedExercises: 0,
+  };
 
-    WorkoutState.isSessionActive = true;
-    WorkoutState.selectedType = type;
-    WorkoutState.sessionStartTime = Date.now();
+  WorkoutState.isSessionActive = true;
+  WorkoutState.selectedType = type;
+  WorkoutState.sessionStartTime = Date.now();
 
-    startTimer();
-    renderSession();
-    showSystemMessage(`WORKOUT PROTOCOL INITIATED — ${WORKOUT_TYPES[type].label}`, 'success');
+  startTimer();
+  renderSession();
+  showSystemMessage(`WORKOUT PROTOCOL INITIATED — ${WORKOUT_TYPES[type].label}`, 'success');
 }
 
 function completeSet(exerciseId) {
-    if (!WorkoutState.isSessionActive) return;
+  if (!WorkoutState.isSessionActive) return;
 
-    const session = WorkoutState.activeSession;
-    const exercise = session.exercises.find(ex => ex.id === exerciseId);
-    if (!exercise || exercise.isComplete) return;
+  const session = WorkoutState.activeSession;
+  const exercise = session.exercises.find(ex => ex.id === exerciseId);
+  if (!exercise || exercise.isComplete) return;
 
-    exercise.completedSets++;
+  exercise.completedSets++;
 
-    // Award XP for the set
-    const setXP = XP_REWARDS.SET_COMPLETE;
-    session.xpEarned += setXP;
-    showFloatingXP(exerciseId, `+${setXP} XP`);
+  // Award XP for the set
+  const setXP = XP_REWARDS.SET_COMPLETE;
+  session.xpEarned += setXP;
+  showFloatingXP(exerciseId, `+${setXP} XP`);
 
-    // Check if exercise is complete
-    if (exercise.completedSets >= exercise.sets) {
-        exercise.isComplete = true;
-        session.completedExercises++;
+  // Check if exercise is complete
+  if (exercise.completedSets >= exercise.sets) {
+    exercise.isComplete = true;
+    session.completedExercises++;
 
-        const exerciseXP = XP_REWARDS.EXERCISE_COMPLETE + XP_REWARDS.BONUS_ALL_SETS;
-        session.xpEarned += exerciseXP;
-        showFloatingXP(exerciseId, `+${exerciseXP} XP COMPLETE!`);
-        showSystemMessage(`${exercise.name} — PROTOCOL CLEARED`, 'success');
-    }
+    const exerciseXP = XP_REWARDS.EXERCISE_COMPLETE + XP_REWARDS.BONUS_ALL_SETS;
+    session.xpEarned += exerciseXP;
+    showFloatingXP(exerciseId, `+${exerciseXP} XP COMPLETE!`);
+    showSystemMessage(`${exercise.name} — PROTOCOL CLEARED`, 'success');
+  }
 
-    updateExerciseCard(exerciseId);
-    updateSessionStats();
+  updateExerciseCard(exerciseId);
+  updateSessionStats();
 }
 
 function skipExercise(exerciseId) {
-    if (!WorkoutState.isSessionActive) return;
+  if (!WorkoutState.isSessionActive) return;
 
-    const exercise = WorkoutState.activeSession.exercises.find(ex => ex.id === exerciseId);
-    if (!exercise || exercise.isComplete) return;
+  const exercise = WorkoutState.activeSession.exercises.find(ex => ex.id === exerciseId);
+  if (!exercise || exercise.isComplete) return;
 
-    exercise.isComplete = true;
-    exercise.skipped = true;
+  exercise.isComplete = true;
+  exercise.skipped = true;
 
-    updateExerciseCard(exerciseId);
-    showSystemMessage(`${exercise.name} — SKIPPED`, 'warning');
+  updateExerciseCard(exerciseId);
+  showSystemMessage(`${exercise.name} — SKIPPED`, 'warning');
 }
 
 async function finishSession() {
-    if (!WorkoutState.isSessionActive) return;
+  if (!WorkoutState.isSessionActive) return;
 
-    const session = WorkoutState.activeSession;
-    const duration = Math.floor((Date.now() - session.startTime) / 1000);
+  const session = WorkoutState.activeSession;
+  const duration = Math.floor((Date.now() - session.startTime) / 1000);
 
-    // Check if at least 1 exercise completed
-    const completedCount = session.exercises.filter(ex => ex.isComplete && !ex.skipped).length;
-    if (completedCount === 0) {
-        showSystemMessage('COMPLETE AT LEAST ONE EXERCISE TO END SESSION', 'error');
-        return;
-    }
+  // Check if at least 1 exercise completed
+  const completedCount = session.exercises.filter(ex => ex.isComplete && !ex.skipped).length;
+  if (completedCount === 0) {
+    showSystemMessage('COMPLETE AT LEAST ONE EXERCISE TO END SESSION', 'error');
+    return;
+  }
 
-    // Full workout bonus if all non-skipped exercises done
-    const nonSkipped = session.exercises.filter(ex => !ex.skipped);
-    const allDone = nonSkipped.every(ex => ex.isComplete);
-    if (allDone) {
-        session.xpEarned += XP_REWARDS.WORKOUT_COMPLETE;
-        showSystemMessage('FULL PROTOCOL COMPLETE — BONUS XP AWARDED', 'success');
-    }
+  // Full workout bonus if all non-skipped exercises done
+  const nonSkipped = session.exercises.filter(ex => !ex.skipped);
+  const allDone = nonSkipped.every(ex => ex.isComplete);
+  if (allDone) {
+    session.xpEarned += XP_REWARDS.WORKOUT_COMPLETE;
+    showSystemMessage('FULL PROTOCOL COMPLETE — BONUS XP AWARDED', 'success');
+  }
 
-    // Apply streak multiplier
-    const player = Storage.getPlayer();
-    const streakDays = player?.streak || 0;
-    const multiplier = Math.min(streakDays * XP_REWARDS.STREAK_MULTIPLIER, 0.5);
-    const bonusXP = Math.floor(session.xpEarned * multiplier);
-    if (bonusXP > 0) {
-        session.xpEarned += bonusXP;
-        showSystemMessage(`STREAK BONUS — +${bonusXP} XP`, 'info');
-    }
+  // Apply streak multiplier
+  const player = Storage.getPlayer();
+  const streakDays = player?.streak || 0;
+  const multiplier = Math.min(streakDays * XP_REWARDS.STREAK_MULTIPLIER, 0.5);
+  const bonusXP = Math.floor(session.xpEarned * multiplier);
+  if (bonusXP > 0) {
+    session.xpEarned += bonusXP;
+    showSystemMessage(`STREAK BONUS — +${bonusXP} XP`, 'info');
+  }
 
-    // Save to storage
-    const sessionRecord = {
-        id: `session_${Date.now()}`,
-        type: session.type,
-        date: new Date().toISOString(),
-        duration,
-        xpEarned: session.xpEarned,
-        exercisesCompleted: completedCount,
-        totalExercises: session.exercises.length,
-        exercises: session.exercises.map(ex => ({
-            id: ex.id,
-            name: ex.name,
-            completedSets: ex.completedSets,
-            totalSets: ex.sets,
-            isComplete: ex.isComplete,
-            skipped: ex.skipped || false,
-        })),
-    };
+  // Save to storage
+  const sessionRecord = {
+    id: `session_${Date.now()}`,
+    type: session.type,
+    date: new Date().toISOString(),
+    duration,
+    xpEarned: session.xpEarned,
+    exercisesCompleted: completedCount,
+    totalExercises: session.exercises.length,
+    exercises: session.exercises.map(ex => ({
+      id: ex.id,
+      name: ex.name,
+      completedSets: ex.completedSets,
+      totalSets: ex.sets,
+      isComplete: ex.isComplete,
+      skipped: ex.skipped || false,
+    })),
+  };
 
-    Storage.addWorkoutSession(sessionRecord);
-    Storage.addXP(session.xpEarned);
-    Storage.updateStreak();
+  Storage.addWorkoutSession(sessionRecord);
+  Storage.addXP(session.xpEarned);
+  Storage.updateStreak();
 
-    stopTimer();
-    WorkoutState.isSessionActive = false;
+  stopTimer();
+  WorkoutState.isSessionActive = false;
 
-    showCompletionScreen(sessionRecord);
+  showCompletionScreen(sessionRecord);
 }
 
 function abandonSession() {
-    if (!WorkoutState.isSessionActive) return;
+  if (!WorkoutState.isSessionActive) return;
 
-    stopTimer();
-    WorkoutState.isSessionActive = false;
-    WorkoutState.activeSession = null;
-    WorkoutState.selectedType = null;
+  stopTimer();
+  WorkoutState.isSessionActive = false;
+  WorkoutState.activeSession = null;
+  WorkoutState.selectedType = null;
 
-    showSystemMessage('SESSION ABANDONED — NO XP AWARDED', 'error');
+  showSystemMessage('SESSION ABANDONED — NO XP AWARDED', 'error');
 
-    setTimeout(() => {
-        renderTypeSelection();
-    }, 1500);
+  setTimeout(() => {
+    renderTypeSelection();
+  }, 1500);
 }
 
 // ─────────────────────────────────────────────
@@ -277,32 +277,32 @@ function abandonSession() {
 // ─────────────────────────────────────────────
 
 function startTimer() {
-    WorkoutState.timerInterval = setInterval(() => {
-        const elapsed = Math.floor((Date.now() - WorkoutState.sessionStartTime) / 1000);
-        updateTimerDisplay(elapsed);
-    }, 1000);
+  WorkoutState.timerInterval = setInterval(() => {
+    const elapsed = Math.floor((Date.now() - WorkoutState.sessionStartTime) / 1000);
+    updateTimerDisplay(elapsed);
+  }, 1000);
 }
 
 function stopTimer() {
-    if (WorkoutState.timerInterval) {
-        clearInterval(WorkoutState.timerInterval);
-        WorkoutState.timerInterval = null;
-    }
+  if (WorkoutState.timerInterval) {
+    clearInterval(WorkoutState.timerInterval);
+    WorkoutState.timerInterval = null;
+  }
 }
 
 function updateTimerDisplay(seconds) {
-    const el = document.getElementById('session-timer');
-    if (!el) return;
-    const h = Math.floor(seconds / 3600);
-    const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
-    el.textContent = h > 0
-        ? `${pad(h)}:${pad(m)}:${pad(s)}`
-        : `${pad(m)}:${pad(s)}`;
+  const el = document.getElementById('session-timer');
+  if (!el) return;
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  el.textContent = h > 0
+    ? `${pad(h)}:${pad(m)}:${pad(s)}`
+    : `${pad(m)}:${pad(s)}`;
 }
 
 function pad(n) {
-    return String(n).padStart(2, '0');
+  return String(n).padStart(2, '0');
 }
 
 // ─────────────────────────────────────────────
@@ -310,10 +310,10 @@ function pad(n) {
 // ─────────────────────────────────────────────
 
 function renderTypeSelection() {
-    const root = document.getElementById('workout-root');
-    if (!root) return;
+  const root = document.getElementById('workout-root');
+  if (!root) return;
 
-    root.innerHTML = `
+  root.innerHTML = `
     <div class="workout-select-screen">
       <div class="workout-header-block">
         <div class="workout-screen-tag">// SELECT PROTOCOL</div>
@@ -339,33 +339,33 @@ function renderTypeSelection() {
     </div>
   `;
 
-    // Bind type selection
-    root.querySelectorAll('.workout-type-card').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const type = btn.dataset.type;
-            if (type === 'custom') {
-                showCustomWorkoutBuilder();
-            } else {
-                showTypeConfirm(type);
-            }
-        });
+  // Bind type selection
+  root.querySelectorAll('.workout-type-card').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.type;
+      if (type === 'custom') {
+        showCustomWorkoutBuilder();
+      } else {
+        showTypeConfirm(type);
+      }
     });
+  });
 }
 
 function renderLastSessionPreview() {
-    const sessions = Storage.getWorkoutHistory();
-    if (!sessions || sessions.length === 0) {
-        return `<div class="no-history">No sessions logged yet. Begin your ascent.</div>`;
-    }
+  const sessions = Storage.getWorkoutHistory();
+  if (!sessions || sessions.length === 0) {
+    return `<div class="no-history">No sessions logged yet. Begin your ascent.</div>`;
+  }
 
-    const last = sessions[sessions.length - 1];
-    const date = new Date(last.date).toLocaleDateString('en-US', {
-        month: 'short', day: 'numeric', year: 'numeric'
-    });
-    const mins = Math.floor(last.duration / 60);
-    const typeInfo = WORKOUT_TYPES[last.type] || WORKOUT_TYPES.custom;
+  const last = sessions[sessions.length - 1];
+  const date = new Date(last.date).toLocaleDateString('en-US', {
+    month: 'short', day: 'numeric', year: 'numeric'
+  });
+  const mins = Math.floor(last.duration / 60);
+  const typeInfo = WORKOUT_TYPES[last.type] || WORKOUT_TYPES.custom;
 
-    return `
+  return `
     <div class="last-session-card" style="--type-color: ${typeInfo.color}">
       <span class="ls-glyph">${typeInfo.glyph}</span>
       <div class="ls-info">
@@ -378,10 +378,10 @@ function renderLastSessionPreview() {
 }
 
 function showTypeConfirm(type) {
-    const typeInfo = WORKOUT_TYPES[type];
-    const root = document.getElementById('workout-root');
+  const typeInfo = WORKOUT_TYPES[type];
+  const root = document.getElementById('workout-root');
 
-    root.innerHTML = `
+  root.innerHTML = `
     <div class="workout-confirm-screen">
       <div class="confirm-type-badge" style="--type-color: ${typeInfo.color}">
         <span class="confirm-glyph">${typeInfo.glyph}</span>
@@ -399,16 +399,16 @@ function showTypeConfirm(type) {
     </div>
   `;
 
-    document.getElementById('confirm-start').addEventListener('click', () => startSession(type));
-    document.getElementById('confirm-back').addEventListener('click', renderTypeSelection);
+  document.getElementById('confirm-start').addEventListener('click', () => startSession(type));
+  document.getElementById('confirm-back').addEventListener('click', renderTypeSelection);
 }
 
 function renderSession() {
-    const root = document.getElementById('workout-root');
-    const session = WorkoutState.activeSession;
-    const typeInfo = WORKOUT_TYPES[session.type];
+  const root = document.getElementById('workout-root');
+  const session = WorkoutState.activeSession;
+  const typeInfo = WORKOUT_TYPES[session.type];
 
-    root.innerHTML = `
+  root.innerHTML = `
     <div class="workout-session-screen">
 
       <!-- Session Header -->
@@ -451,23 +451,23 @@ function renderSession() {
     </div>
   `;
 
-    document.getElementById('btn-finish-session').addEventListener('click', finishSession);
-    document.getElementById('btn-abandon-session').addEventListener('click', () => {
-        if (confirm('Abandon this session? No XP will be awarded.')) {
-            abandonSession();
-        }
-    });
+  document.getElementById('btn-finish-session').addEventListener('click', finishSession);
+  document.getElementById('btn-abandon-session').addEventListener('click', () => {
+    if (confirm('Abandon this session? No XP will be awarded.')) {
+      abandonSession();
+    }
+  });
 
-    bindExerciseCardEvents();
+  bindExerciseCardEvents();
 }
 
 function renderExerciseCard(ex, index) {
-    const session = WorkoutState.activeSession;
-    const typeInfo = WORKOUT_TYPES[session.type];
+  const session = WorkoutState.activeSession;
+  const typeInfo = WORKOUT_TYPES[session.type];
 
-    const setsArr = Array.from({ length: ex.sets }, (_, i) => i);
+  const setsArr = Array.from({ length: ex.sets }, (_, i) => i);
 
-    return `
+  return `
     <div class="exercise-card ${ex.isComplete ? (ex.skipped ? 'skipped' : 'complete') : ''}"
          id="ex-card-${ex.id}"
          style="--type-color: ${typeInfo.color}; --delay: ${index * 0.06}s">
@@ -483,11 +483,11 @@ function renderExerciseCard(ex, index) {
         <div class="ex-meta">
           <span class="ex-sets-reps">${ex.sets} × ${ex.reps}</span>
           ${ex.isComplete
-            ? `<span class="ex-status-badge ${ex.skipped ? 'badge-skip' : 'badge-done'}">
+      ? `<span class="ex-status-badge ${ex.skipped ? 'badge-skip' : 'badge-done'}">
                 ${ex.skipped ? 'SKIPPED' : 'CLEARED'}
                </span>`
-            : `<span class="ex-sets-done">${ex.completedSets}/${ex.sets} sets</span>`
-        }
+      : `<span class="ex-sets-done">${ex.completedSets}/${ex.sets} sets</span>`
+    }
         </div>
       </div>
 
@@ -518,70 +518,70 @@ function renderExerciseCard(ex, index) {
 }
 
 function updateExerciseCard(exerciseId) {
-    const session = WorkoutState.activeSession;
-    const exercise = session.exercises.find(ex => ex.id === exerciseId);
-    const card = document.getElementById(`ex-card-${exerciseId}`);
-    if (!card || !exercise) return;
+  const session = WorkoutState.activeSession;
+  const exercise = session.exercises.find(ex => ex.id === exerciseId);
+  const card = document.getElementById(`ex-card-${exerciseId}`);
+  if (!card || !exercise) return;
 
-    // Update set dots
-    const dots = card.querySelectorAll('.set-dot');
-    dots.forEach((dot, i) => {
-        dot.classList.toggle('set-done', i < exercise.completedSets);
-    });
+  // Update set dots
+  const dots = card.querySelectorAll('.set-dot');
+  dots.forEach((dot, i) => {
+    dot.classList.toggle('set-done', i < exercise.completedSets);
+  });
 
-    // Update sets done label
-    const setsLabel = card.querySelector('.ex-sets-done');
-    if (setsLabel) setsLabel.textContent = `${exercise.completedSets}/${exercise.sets} sets`;
+  // Update sets done label
+  const setsLabel = card.querySelector('.ex-sets-done');
+  if (setsLabel) setsLabel.textContent = `${exercise.completedSets}/${exercise.sets} sets`;
 
-    // If complete, re-render full card
-    if (exercise.isComplete) {
-        const index = session.exercises.indexOf(exercise);
-        card.outerHTML = renderExerciseCard(exercise, index);
-        // Rebind since DOM changed
-        const newCard = document.getElementById(`ex-card-${exerciseId}`);
-        if (newCard) {
-            newCard.classList.add('just-completed');
-            setTimeout(() => newCard.classList.remove('just-completed'), 800);
-        }
-        bindExerciseCardEvents();
+  // If complete, re-render full card
+  if (exercise.isComplete) {
+    const index = session.exercises.indexOf(exercise);
+    card.outerHTML = renderExerciseCard(exercise, index);
+    // Rebind since DOM changed
+    const newCard = document.getElementById(`ex-card-${exerciseId}`);
+    if (newCard) {
+      newCard.classList.add('just-completed');
+      setTimeout(() => newCard.classList.remove('just-completed'), 800);
     }
+    bindExerciseCardEvents();
+  }
 }
 
 function updateSessionStats() {
-    const session = WorkoutState.activeSession;
+  const session = WorkoutState.activeSession;
 
-    const xpEl = document.getElementById('live-xp');
-    if (xpEl) xpEl.textContent = session.xpEarned;
+  const xpEl = document.getElementById('live-xp');
+  if (xpEl) xpEl.textContent = session.xpEarned;
 
-    const completed = session.exercises.filter(ex => ex.isComplete).length;
-    const total = session.exercises.length;
-    const pct = Math.round((completed / total) * 100);
+  const completed = session.exercises.filter(ex => ex.isComplete).length;
+  const total = session.exercises.length;
+  const pct = Math.round((completed / total) * 100);
 
-    const fillEl = document.getElementById('session-progress-fill');
-    if (fillEl) fillEl.style.width = `${pct}%`;
+  const fillEl = document.getElementById('session-progress-fill');
+  if (fillEl) fillEl.style.width = `${pct}%`;
 
-    const textEl = document.getElementById('session-progress-text');
-    if (textEl) textEl.textContent = `${completed} / ${total}`;
+  const textEl = document.getElementById('session-progress-text');
+  if (textEl) textEl.textContent = `${completed} / ${total}`;
 }
 
 function bindExerciseCardEvents() {
-    document.querySelectorAll('.btn-set-complete').forEach(btn => {
-        btn.addEventListener('click', () => completeSet(btn.dataset.exerciseId));
-    });
+  document.querySelectorAll('.btn-set-complete').forEach(btn => {
+    btn.addEventListener('click', () => completeSet(btn.dataset.exerciseId));
+  });
 
-    document.querySelectorAll('.btn-skip-exercise').forEach(btn => {
-        btn.addEventListener('click', () => skipExercise(btn.dataset.exerciseId));
-    });
+  document.querySelectorAll('.btn-skip-exercise').forEach(btn => {
+    btn.addEventListener('click', () => skipExercise(btn.dataset.exerciseId));
+  });
 }
 
 function showCompletionScreen(record) {
-    const root = document.getElementById('workout-root');
-    const typeInfo = WORKOUT_TYPES[record.type];
-    const player = Storage.getPlayer();
-    const mins = Math.floor(record.duration / 60);
-    const secs = record.duration % 60;
+  const root = document.getElementById('workout-root');
+  const typeInfo = WORKOUT_TYPES[record.type];
+  const player = Storage.getPlayer();
+  const mins = Math.floor(record.duration / 60);
+  const secs = record.duration % 60;
 
-    root.innerHTML = `
+  root.innerHTML = `
     <div class="completion-screen">
       <div class="completion-pulse" style="--type-color: ${typeInfo.color}"></div>
 
@@ -629,16 +629,16 @@ function showCompletionScreen(record) {
     </div>
   `;
 
-    document.getElementById('btn-train-again')?.addEventListener('click', () => {
-        WorkoutState.activeSession = null;
-        renderTypeSelection();
-    });
+  document.getElementById('btn-train-again')?.addEventListener('click', () => {
+    WorkoutState.activeSession = null;
+    renderTypeSelection();
+  });
 
-    // Animate XP bar in
-    setTimeout(() => {
-        const fill = document.querySelector('.level-bar-fill');
-        if (fill) fill.style.transition = 'width 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
-    }, 100);
+  // Animate XP bar in
+  setTimeout(() => {
+    const fill = document.querySelector('.level-bar-fill');
+    if (fill) fill.style.transition = 'width 1.2s cubic-bezier(0.16, 1, 0.3, 1)';
+  }, 100);
 }
 
 // ─────────────────────────────────────────────
@@ -646,42 +646,42 @@ function showCompletionScreen(record) {
 // ─────────────────────────────────────────────
 
 function getXPPercent(player) {
-    if (!player) return 0;
-    const xpForNext = Storage.getXPForNextLevel(player.level);
-    const xpForCurrent = Storage.getXPForNextLevel(player.level - 1);
-    const progress = player.xp - xpForCurrent;
-    const needed = xpForNext - xpForCurrent;
-    return Math.min(Math.round((progress / needed) * 100), 100);
+  if (!player) return 0;
+  const xpForNext = Storage.getXPForNextLevel(player.level);
+  const xpForCurrent = Storage.getXPForNextLevel(player.level - 1);
+  const progress = player.xp - xpForCurrent;
+  const needed = xpForNext - xpForCurrent;
+  return Math.min(Math.round((progress / needed) * 100), 100);
 }
 
 function showFloatingXP(exerciseId, text) {
-    const el = document.getElementById(`xp-float-${exerciseId}`);
-    if (!el) return;
-    el.textContent = text;
-    el.classList.add('xp-float-active');
-    setTimeout(() => el.classList.remove('xp-float-active'), 1200);
+  const el = document.getElementById(`xp-float-${exerciseId}`);
+  if (!el) return;
+  el.textContent = text;
+  el.classList.add('xp-float-active');
+  setTimeout(() => el.classList.remove('xp-float-active'), 1200);
 }
 
 function showSystemMessage(msg, type = 'info') {
-    const existing = document.getElementById('system-message-toast');
-    if (existing) existing.remove();
+  const existing = document.getElementById('system-message-toast');
+  if (existing) existing.remove();
 
-    const toast = document.createElement('div');
-    toast.id = 'system-message-toast';
-    toast.className = `system-toast toast-${type}`;
-    toast.textContent = `// ${msg}`;
-    document.body.appendChild(toast);
+  const toast = document.createElement('div');
+  toast.id = 'system-message-toast';
+  toast.className = `system-toast toast-${type}`;
+  toast.textContent = `// ${msg}`;
+  document.body.appendChild(toast);
 
-    setTimeout(() => toast.classList.add('toast-visible'), 10);
-    setTimeout(() => {
-        toast.classList.remove('toast-visible');
-        setTimeout(() => toast.remove(), 400);
-    }, 2800);
+  setTimeout(() => toast.classList.add('toast-visible'), 10);
+  setTimeout(() => {
+    toast.classList.remove('toast-visible');
+    setTimeout(() => toast.remove(), 400);
+  }, 2800);
 }
 
 function showCustomWorkoutBuilder() {
-    const root = document.getElementById('workout-root');
-    root.innerHTML = `
+  const root = document.getElementById('workout-root');
+  root.innerHTML = `
     <div class="custom-builder-screen">
       <div class="workout-screen-tag">// CUSTOM PROTOCOL</div>
       <h2 class="workout-screen-title">BUILD YOUR <span class="accent">OWN</span></h2>
@@ -689,7 +689,7 @@ function showCustomWorkoutBuilder() {
       <button class="btn-void btn-back" id="back-from-custom">BACK</button>
     </div>
   `;
-    document.getElementById('back-from-custom').addEventListener('click', renderTypeSelection);
+  document.getElementById('back-from-custom').addEventListener('click', renderTypeSelection);
 }
 
 // ─────────────────────────────────────────────
@@ -697,14 +697,14 @@ function showCustomWorkoutBuilder() {
 // ─────────────────────────────────────────────
 
 function init() {
-    renderTypeSelection();
+  renderTypeSelection();
 }
 
 export { init, startSession, completeSet, skipExercise, finishSession, abandonSession };
 
 // Auto-init if on workout page
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', init);
 } else {
-    init();
+  init();
 }

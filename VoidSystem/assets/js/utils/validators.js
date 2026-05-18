@@ -215,9 +215,9 @@ export function isValidReps(reps) {
  * @returns {boolean}
  */
 export function isValidWorkoutDuration(duration) {
-  return isInteger(duration) && 
-         duration >= LIMITS.MIN_WORKOUT_DURATION && 
-         duration <= LIMITS.MAX_WORKOUT_DURATION;
+  return isInteger(duration) &&
+    duration >= LIMITS.MIN_WORKOUT_DURATION &&
+    duration <= LIMITS.MAX_WORKOUT_DURATION;
 }
 
 /**
@@ -294,12 +294,12 @@ export function isValidQuestCategory(category) {
  */
 export function isValidQuestRequirement(requirement) {
   if (!requirement || typeof requirement !== 'object') return false;
-  
+
   const validTypes = ['workouts', 'streak', 'level', 'xp'];
   if (!validTypes.includes(requirement.type)) return false;
-  
+
   if (!isPositiveNumber(requirement.target)) return false;
-  
+
   return true;
 }
 

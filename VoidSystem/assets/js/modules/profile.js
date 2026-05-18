@@ -12,8 +12,8 @@ import { calculateXPProgress, getRankInfo, calculateRankProgress, calculateTotal
 // ─────────────────────────────────────────────
 
 const ProfileState = {
-    player: null,
-    editMode: false,
+  player: null,
+  editMode: false,
 };
 
 // ─────────────────────────────────────────────
@@ -21,8 +21,8 @@ const ProfileState = {
 // ─────────────────────────────────────────────
 
 function init() {
-    ProfileState.player = Storage.getPlayer();
-    renderProfile();
+  ProfileState.player = Storage.getPlayer();
+  renderProfile();
 }
 
 // ─────────────────────────────────────────────
@@ -30,12 +30,12 @@ function init() {
 // ─────────────────────────────────────────────
 
 function renderProfile() {
-    const root = document.getElementById('profile-root');
-    if (!root) return;
+  const root = document.getElementById('profile-root');
+  if (!root) return;
 
-    const player = ProfileState.player;
+  const player = ProfileState.player;
 
-    root.innerHTML = `
+  root.innerHTML = `
     <div class="profile-screen">
 
       <!-- Header -->
@@ -185,7 +185,7 @@ function renderProfile() {
     </div>
   `;
 
-    bindProfileEvents();
+  bindProfileEvents();
 }
 
 // ─────────────────────────────────────────────
@@ -193,19 +193,19 @@ function renderProfile() {
 // ─────────────────────────────────────────────
 
 function renderStatCards(stats) {
-    const statNames = {
-        strength: { label: 'Strength', icon: '💪', color: '#ff4444' },
-        endurance: { label: 'Endurance', icon: '🏃', color: '#44aaff' },
-        agility: { label: 'Agility', icon: '⚡', color: '#ffaa44' },
-        intelligence: { label: 'Intelligence', icon: '🧠', color: '#aa44ff' },
-        willpower: { label: 'Willpower', icon: '🔥', color: '#44ffaa' },
-    };
+  const statNames = {
+    strength: { label: 'Strength', icon: '💪', color: '#ff4444' },
+    endurance: { label: 'Endurance', icon: '🏃', color: '#44aaff' },
+    agility: { label: 'Agility', icon: '⚡', color: '#ffaa44' },
+    intelligence: { label: 'Intelligence', icon: '🧠', color: '#aa44ff' },
+    willpower: { label: 'Willpower', icon: '🔥', color: '#44ffaa' },
+  };
 
-    return Object.entries(stats).map(([key, value]) => {
-        const stat = statNames[key];
-        if (!stat) return '';
+  return Object.entries(stats).map(([key, value]) => {
+    const stat = statNames[key];
+    if (!stat) return '';
 
-        return `
+    return `
       <div class="stat-card" style="--stat-color: ${stat.color}">
         <div class="stat-icon">${stat.icon}</div>
         <div class="stat-info">
@@ -217,14 +217,14 @@ function renderStatCards(stats) {
         </div>
       </div>
     `;
-    }).join('');
+  }).join('');
 }
 
 function renderBodyMetrics(body) {
-    const bmi = body.bmi || (body.height && body.weight ? calculateBMI(body.weight, body.height) : null);
-    const bmiCategory = bmi ? getBMICategory(bmi) : 'Unknown';
+  const bmi = body.bmi || (body.height && body.weight ? calculateBMI(body.weight, body.height) : null);
+  const bmiCategory = bmi ? getBMICategory(bmi) : 'Unknown';
 
-    return `
+  return `
     <div class="body-metric-card">
       <span class="metric-label">HEIGHT</span>
       <span class="metric-value">${body.height ? formatHeight(body.height) : '—'}</span>
@@ -253,7 +253,7 @@ function renderBodyMetrics(body) {
 }
 
 function renderBodyEditForm(body) {
-    return `
+  return `
     <div class="body-edit-form">
       <div class="form-group">
         <label>Height (cm)</label>
@@ -282,18 +282,18 @@ function renderBodyEditForm(body) {
 }
 
 function renderAchievementsPreview(achievements) {
-    if (!achievements || achievements.length === 0) {
-        return `
+  if (!achievements || achievements.length === 0) {
+    return `
       <div class="no-achievements">
         <span>No achievements unlocked yet.</span>
         <p>Complete quests and workouts to earn achievements.</p>
       </div>
     `;
-    }
+  }
 
-    const preview = achievements.slice(0, 6);
+  const preview = achievements.slice(0, 6);
 
-    return `
+  return `
     <div class="achievements-grid">
       ${preview.map(a => `
         <div class="achievement-badge">
@@ -306,11 +306,11 @@ function renderAchievementsPreview(achievements) {
 }
 
 function renderTitles(titles, activeTitle) {
-    if (!titles || titles.length === 0) {
-        return `<div class="no-titles">No titles unlocked yet.</div>`;
-    }
+  if (!titles || titles.length === 0) {
+    return `<div class="no-titles">No titles unlocked yet.</div>`;
+  }
 
-    return titles.map(title => `
+  return titles.map(title => `
     <div class="title-card ${title === activeTitle ? 'active' : ''}" data-title="${title}">
       <span class="title-text">"${title}"</span>
       ${title === activeTitle ? '<span class="title-badge">ACTIVE</span>' : ''}
@@ -323,57 +323,57 @@ function renderTitles(titles, activeTitle) {
 // ─────────────────────────────────────────────
 
 function bindProfileEvents() {
-    const editBtn = document.getElementById('btn-edit-body');
-    if (editBtn) {
-        editBtn.addEventListener('click', toggleBodyEdit);
-    }
+  const editBtn = document.getElementById('btn-edit-body');
+  if (editBtn) {
+    editBtn.addEventListener('click', toggleBodyEdit);
+  }
 
-    // Bind title selection
-    document.querySelectorAll('.title-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const title = card.dataset.title;
-            selectTitle(title);
-        });
+  // Bind title selection
+  document.querySelectorAll('.title-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const title = card.dataset.title;
+      selectTitle(title);
     });
+  });
 }
 
 function toggleBodyEdit() {
-    if (ProfileState.editMode) {
-        // Save mode
-        saveBodyMetrics();
-        ProfileState.editMode = false;
-    } else {
-        // Edit mode
-        ProfileState.editMode = true;
-    }
+  if (ProfileState.editMode) {
+    // Save mode
+    saveBodyMetrics();
+    ProfileState.editMode = false;
+  } else {
+    // Edit mode
+    ProfileState.editMode = true;
+  }
 
-    renderProfile();
+  renderProfile();
 }
 
 function saveBodyMetrics() {
-    const height = parseFloat(document.getElementById('input-height')?.value);
-    const weight = parseFloat(document.getElementById('input-weight')?.value);
-    const age = parseInt(document.getElementById('input-age')?.value);
-    const gender = document.getElementById('input-gender')?.value;
+  const height = parseFloat(document.getElementById('input-height')?.value);
+  const weight = parseFloat(document.getElementById('input-weight')?.value);
+  const age = parseInt(document.getElementById('input-age')?.value);
+  const gender = document.getElementById('input-gender')?.value;
 
-    const bodyData = {};
+  const bodyData = {};
 
-    if (!isNaN(height) && height > 0) bodyData.height = height;
-    if (!isNaN(weight) && weight > 0) bodyData.weight = weight;
-    if (!isNaN(age) && age > 0) bodyData.age = age;
-    if (gender) bodyData.gender = gender;
+  if (!isNaN(height) && height > 0) bodyData.height = height;
+  if (!isNaN(weight) && weight > 0) bodyData.weight = weight;
+  if (!isNaN(age) && age > 0) bodyData.age = age;
+  if (gender) bodyData.gender = gender;
 
-    Storage.updateBody(bodyData);
-    ProfileState.player = Storage.getPlayer();
+  Storage.updateBody(bodyData);
+  ProfileState.player = Storage.getPlayer();
 
-    showSystemMessage('BODY METRICS UPDATED', 'success');
+  showSystemMessage('BODY METRICS UPDATED', 'success');
 }
 
 function selectTitle(title) {
-    Storage.setActiveTitle(title);
-    ProfileState.player = Storage.getPlayer();
-    renderProfile();
-    showSystemMessage(`TITLE EQUIPPED — "${title}"`, 'success');
+  Storage.setActiveTitle(title);
+  ProfileState.player = Storage.getPlayer();
+  renderProfile();
+  showSystemMessage(`TITLE EQUIPPED — "${title}"`, 'success');
 }
 
 // ─────────────────────────────────────────────
@@ -381,20 +381,20 @@ function selectTitle(title) {
 // ─────────────────────────────────────────────
 
 function showSystemMessage(msg, type = 'info') {
-    const existing = document.getElementById('system-message-toast');
-    if (existing) existing.remove();
+  const existing = document.getElementById('system-message-toast');
+  if (existing) existing.remove();
 
-    const toast = document.createElement('div');
-    toast.id = 'system-message-toast';
-    toast.className = `system-toast toast-${type}`;
-    toast.textContent = `// ${msg}`;
-    document.body.appendChild(toast);
+  const toast = document.createElement('div');
+  toast.id = 'system-message-toast';
+  toast.className = `system-toast toast-${type}`;
+  toast.textContent = `// ${msg}`;
+  document.body.appendChild(toast);
 
-    setTimeout(() => toast.classList.add('toast-visible'), 10);
-    setTimeout(() => {
-        toast.classList.remove('toast-visible');
-        setTimeout(() => toast.remove(), 400);
-    }, 2800);
+  setTimeout(() => toast.classList.add('toast-visible'), 10);
+  setTimeout(() => {
+    toast.classList.remove('toast-visible');
+    setTimeout(() => toast.remove(), 400);
+  }, 2800);
 }
 
 // ─────────────────────────────────────────────
@@ -402,10 +402,10 @@ function showSystemMessage(msg, type = 'info') {
 // ─────────────────────────────────────────────
 
 function calculateBMI(weightKg, heightCm) {
-    if (!weightKg || !heightCm || heightCm === 0) return null;
-    const heightM = heightCm / 100;
-    const bmi = weightKg / (heightM * heightM);
-    return Math.round(bmi * 10) / 10;
+  if (!weightKg || !heightCm || heightCm === 0) return null;
+  const heightM = heightCm / 100;
+  const bmi = weightKg / (heightM * heightM);
+  return Math.round(bmi * 10) / 10;
 }
 
 // ─────────────────────────────────────────────
@@ -413,15 +413,15 @@ function calculateBMI(weightKg, heightCm) {
 // ─────────────────────────────────────────────
 
 export {
-    init,
-    renderProfile,
-    toggleBodyEdit,
-    selectTitle,
+  init,
+  renderProfile,
+  toggleBodyEdit,
+  selectTitle,
 };
 
 // Auto-init if on profile page
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', init);
 } else {
-    init();
+  init();
 }

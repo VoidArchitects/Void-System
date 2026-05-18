@@ -257,12 +257,12 @@ const ACCEPTANCE_SEQUENCE = [
 async function typeText(element, text, speed = SystemState.typingSpeed) {
   SystemState.isTyping = true;
   element.textContent = '';
-  
+
   for (let i = 0; i < text.length; i++) {
     element.textContent += text[i];
     await sleep(speed);
   }
-  
+
   SystemState.isTyping = false;
 }
 
@@ -443,12 +443,12 @@ function init() {
   startIntroSequence();
 }
 
-export { 
-  init, 
-  startIntroSequence, 
-  handleAcceptance, 
-  handleRejection, 
-  checkSystemAccess 
+export {
+  init,
+  startIntroSequence,
+  handleAcceptance,
+  handleRejection,
+  checkSystemAccess
 };
 
 // Auto-init if on index page

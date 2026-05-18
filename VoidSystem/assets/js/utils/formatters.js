@@ -27,10 +27,10 @@ export function formatNumber(num) {
  */
 export function formatCompactNumber(num, decimals = 1) {
   if (typeof num !== 'number' || isNaN(num)) return '0';
-  
+
   const abs = Math.abs(num);
   const sign = num < 0 ? '-' : '';
-  
+
   if (abs >= 1e9) {
     return sign + (abs / 1e9).toFixed(decimals) + 'B';
   }
@@ -40,7 +40,7 @@ export function formatCompactNumber(num, decimals = 1) {
   if (abs >= 1e3) {
     return sign + (abs / 1e3).toFixed(decimals) + 'K';
   }
-  
+
   return sign + abs.toString();
 }
 
@@ -96,10 +96,10 @@ export function formatDecimal(num, decimals = 1) {
  */
 export function formatTime(seconds) {
   if (typeof seconds !== 'number' || isNaN(seconds)) return '00:00';
-  
+
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
-  
+
   return `${padNumber(mins)}:${padNumber(secs)}`;
 }
 
@@ -110,15 +110,15 @@ export function formatTime(seconds) {
  */
 export function formatDuration(seconds) {
   if (typeof seconds !== 'number' || isNaN(seconds)) return '00:00:00';
-  
+
   const hours = Math.floor(seconds / 3600);
   const mins = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
-  
+
   if (hours > 0) {
     return `${padNumber(hours)}:${padNumber(mins)}:${padNumber(secs)}`;
   }
-  
+
   return `${padNumber(mins)}:${padNumber(secs)}`;
 }
 
@@ -129,17 +129,17 @@ export function formatDuration(seconds) {
  */
 export function formatHumanDuration(seconds) {
   if (typeof seconds !== 'number' || isNaN(seconds)) return '0s';
-  
+
   const hours = Math.floor(seconds / 3600);
   const mins = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
-  
+
   const parts = [];
-  
+
   if (hours > 0) parts.push(`${hours}h`);
   if (mins > 0) parts.push(`${mins}m`);
   if (secs > 0 || parts.length === 0) parts.push(`${secs}s`);
-  
+
   return parts.join(' ');
 }
 
@@ -151,15 +151,15 @@ export function formatHumanDuration(seconds) {
  */
 export function formatDate(date, format = 'short') {
   const d = typeof date === 'string' ? new Date(date) : date;
-  
+
   if (!(d instanceof Date) || isNaN(d.getTime())) {
     return 'Invalid Date';
   }
-  
+
   if (format === 'relative') {
     return formatRelativeDate(d);
   }
-  
+
   if (format === 'long') {
     return d.toLocaleDateString('en-US', {
       year: 'numeric',
@@ -169,7 +169,7 @@ export function formatDate(date, format = 'short') {
       minute: '2-digit',
     });
   }
-  
+
   // Short format (default)
   return d.toLocaleDateString('en-US', {
     month: 'short',
@@ -185,18 +185,18 @@ export function formatDate(date, format = 'short') {
  */
 export function formatRelativeDate(date) {
   const d = typeof date === 'string' ? new Date(date) : date;
-  
+
   if (!(d instanceof Date) || isNaN(d.getTime())) {
     return 'Invalid Date';
   }
-  
+
   const now = new Date();
   const diffMs = now - d;
   const diffSecs = Math.floor(diffMs / 1000);
   const diffMins = Math.floor(diffSecs / 60);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
-  
+
   if (diffSecs < 60) return 'just now';
   if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
   if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
@@ -209,7 +209,7 @@ export function formatRelativeDate(date) {
     const months = Math.floor(diffDays / 30);
     return `${months} month${months > 1 ? 's' : ''} ago`;
   }
-  
+
   const years = Math.floor(diffDays / 365);
   return `${years} year${years > 1 ? 's' : ''} ago`;
 }
@@ -221,11 +221,11 @@ export function formatRelativeDate(date) {
  */
 export function formatTimeOfDay(date) {
   const d = typeof date === 'string' ? new Date(date) : date;
-  
+
   if (!(d instanceof Date) || isNaN(d.getTime())) {
     return 'Invalid Time';
   }
-  
+
   return d.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
@@ -309,14 +309,14 @@ export function formatStat(statName, value) {
  */
 export function formatHeight(cm, unit = 'metric') {
   if (typeof cm !== 'number' || isNaN(cm)) return '—';
-  
+
   if (unit === 'imperial') {
     const totalInches = cm / 2.54;
     const feet = Math.floor(totalInches / 12);
     const inches = Math.round(totalInches % 12);
     return `${feet}'${inches}"`;
   }
-  
+
   return `${cm} cm`;
 }
 
@@ -328,12 +328,12 @@ export function formatHeight(cm, unit = 'metric') {
  */
 export function formatWeight(kg, unit = 'metric') {
   if (typeof kg !== 'number' || isNaN(kg)) return '—';
-  
+
   if (unit === 'imperial') {
     const lbs = Math.round(kg * 2.20462);
     return `${lbs} lbs`;
   }
-  
+
   return `${kg} kg`;
 }
 
@@ -354,7 +354,7 @@ export function formatBMI(bmi) {
  */
 export function getBMICategory(bmi) {
   if (typeof bmi !== 'number' || isNaN(bmi)) return 'Unknown';
-  
+
   if (bmi < 18.5) return 'Underweight';
   if (bmi < 25) return 'Normal';
   if (bmi < 30) return 'Overweight';
@@ -429,7 +429,7 @@ export function formatList(items, conjunction = 'and') {
   if (!Array.isArray(items) || items.length === 0) return '';
   if (items.length === 1) return items[0];
   if (items.length === 2) return `${items[0]} ${conjunction} ${items[1]}`;
-  
+
   const lastItem = items[items.length - 1];
   const rest = items.slice(0, -1);
   return `${rest.join(', ')}, ${conjunction} ${lastItem}`;
@@ -456,7 +456,7 @@ export function formatSetsReps(sets, reps) {
  */
 export function formatWorkoutType(type) {
   if (!type || typeof type !== 'string') return 'Unknown';
-  
+
   const typeMap = {
     push: 'PUSH',
     pull: 'PULL',
@@ -465,7 +465,7 @@ export function formatWorkoutType(type) {
     cardio: 'CARDIO',
     custom: 'CUSTOM',
   };
-  
+
   return typeMap[type] || titleCase(type);
 }
 
@@ -496,7 +496,7 @@ export function formatDifficulty(difficulty) {
     brutal: '✦ BRUTAL',
     legendary: '★ LEGENDARY',
   };
-  
+
   return diffMap[difficulty?.toLowerCase()] || '● EASY';
 }
 
@@ -511,10 +511,10 @@ export function formatDifficulty(difficulty) {
  */
 export function getOrdinalSuffix(num) {
   if (typeof num !== 'number') return 'th';
-  
+
   const lastDigit = num % 10;
   const lastTwoDigits = num % 100;
-  
+
   if (lastTwoDigits >= 11 && lastTwoDigits <= 13) return 'th';
   if (lastDigit === 1) return 'st';
   if (lastDigit === 2) return 'nd';
@@ -543,16 +543,16 @@ export function formatOrdinal(num) {
  */
 export function formatFileSize(bytes) {
   if (typeof bytes !== 'number' || isNaN(bytes)) return '0 B';
-  
+
   const units = ['B', 'KB', 'MB', 'GB', 'TB'];
   let size = bytes;
   let unitIndex = 0;
-  
+
   while (size >= 1024 && unitIndex < units.length - 1) {
     size /= 1024;
     unitIndex++;
   }
-  
+
   return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
 }
 

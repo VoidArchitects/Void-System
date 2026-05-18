@@ -17,7 +17,7 @@ import { XP_CONSTANTS, RANKS, BMI_CATEGORIES } from './constants.js';
  */
 export function calculateXPForLevel(level) {
   if (level <= 1) return 0;
-  
+
   let cumulative = 0;
   if (level <= 21) {
     // Early Game: Gentle curve to get players hooked
@@ -29,7 +29,7 @@ export function calculateXPForLevel(level) {
     // Late Game: Cubic curve for the long grind
     cumulative = 0.001894 * Math.pow(level, 3) + 10526.14 * Math.pow(level, 2) - 763150 * level + 14956684.52;
   }
-  
+
   return Math.max(0, Math.floor(cumulative));
 }
 
@@ -41,12 +41,12 @@ export function calculateXPForLevel(level) {
 export function calculateLevelFromXP(xp) {
   let level = 1;
   let totalXP = 0;
-  
+
   while (totalXP <= xp) {
     level++;
     totalXP = calculateXPForLevel(level);
   }
-  
+
   return level - 1;
 }
 
@@ -61,7 +61,7 @@ export function calculateXPToNextLevel(currentXP, currentLevel) {
   const xpForCurrent = calculateXPForLevel(currentLevel);
   const progress = currentXP - xpForCurrent;
   const needed = xpForNext - xpForCurrent;
-  
+
   return Math.max(0, needed - progress);
 }
 
@@ -76,9 +76,9 @@ export function calculateXPProgress(currentXP, currentLevel) {
   const xpForCurrent = calculateXPForLevel(currentLevel);
   const progress = currentXP - xpForCurrent;
   const needed = xpForNext - xpForCurrent;
-  
+
   if (needed === 0) return 100;
-  
+
   const percent = (progress / needed) * 100;
   return Math.min(Math.max(percent, 0), 100);
 }
@@ -94,7 +94,7 @@ export function calculateXPWithStreak(baseXP, streakDays) {
     streakDays * XP_CONSTANTS.STREAK_MULTIPLIER,
     XP_CONSTANTS.MAX_STREAK_BONUS
   );
-  
+
   const bonus = Math.floor(baseXP * multiplier);
   return baseXP + bonus;
 }
@@ -112,7 +112,7 @@ export function calculateQuestXP(difficulty) {
     brutal: XP_CONSTANTS.QUEST_BRUTAL,
     legendary: XP_CONSTANTS.QUEST_LEGENDARY,
   };
-  
+
   return xpMap[difficulty?.toLowerCase()] || XP_CONSTANTS.QUEST_EASY;
 }
 
@@ -151,10 +151,10 @@ export function getRankInfo(rank) {
 export function calculateRankProgress(level) {
   const rank = getRankFromLevel(level);
   const rankInfo = getRankInfo(rank);
-  
+
   const progress = level - rankInfo.minLevel;
   const total = rankInfo.maxLevel - rankInfo.minLevel + 1;
-  
+
   return Math.round((progress / total) * 100);
 }
 
@@ -166,9 +166,9 @@ export function calculateRankProgress(level) {
 export function levelsUntilNextRank(level) {
   const rank = getRankFromLevel(level);
   const rankInfo = getRankInfo(rank);
-  
+
   if (rank === 'S') return 0; // Already max rank
-  
+
   return rankInfo.maxLevel - level + 1;
 }
 
@@ -226,14 +226,14 @@ export function calculateDaysBetween(date1, date2) {
   // Use new Date objects so we don't mutate the originals
   const d1 = typeof date1 === 'string' ? new Date(date1) : new Date(date1.getTime());
   const d2 = typeof date2 === 'string' ? new Date(date2) : new Date(date2.getTime());
-  
+
   // Reset time to compare strict calendar days
   d1.setHours(0, 0, 0, 0);
   d2.setHours(0, 0, 0, 0);
-  
+
   const diffTime = Math.abs(d2 - d1);
   const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-  
+
   return diffDays;
 }
 
@@ -244,11 +244,11 @@ export function calculateDaysBetween(date1, date2) {
  */
 export function shouldContinueStreak(lastWorkoutDate) {
   if (!lastWorkoutDate) return false;
-  
+
   const today = new Date();
   const lastDate = new Date(lastWorkoutDate);
   const daysSince = calculateDaysBetween(lastDate, today);
-  
+
   // Streak continues if workout was today or yesterday
   return daysSince <= 1;
 }
@@ -275,10 +275,10 @@ export function calculateStreakBonus(streakDays) {
  */
 export function calculateBMI(weightKg, heightCm) {
   if (!weightKg || !heightCm || heightCm === 0) return 0;
-  
+
   const heightM = heightCm / 100;
   const bmi = weightKg / (heightM * heightM);
-  
+
   return Math.round(bmi * 10) / 10; // Round to 1 decimal
 }
 
@@ -349,10 +349,10 @@ export function lbsToKg(lbs) {
 export function calculateIdealWeightRange(heightCm) {
   const heightM = heightCm / 100;
   const heightSq = heightM * heightM;
-  
+
   const minWeight = Math.round(18.5 * heightSq);
   const maxWeight = Math.round(24.9 * heightSq);
-  
+
   return { min: minWeight, max: maxWeight };
 }
 
@@ -377,7 +377,7 @@ export function calculateTotalSets(exercises) {
  */
 export function calculateWorkoutCompletion(exercises) {
   if (!Array.isArray(exercises) || exercises.length === 0) return 0;
-  
+
   const completedCount = exercises.filter(ex => ex.isComplete).length;
   return Math.round((completedCount / exercises.length) * 100);
 }
@@ -389,7 +389,7 @@ export function calculateWorkoutCompletion(exercises) {
  */
 export function calculateAverageWorkoutDuration(workoutHistory) {
   if (!Array.isArray(workoutHistory) || workoutHistory.length === 0) return 0;
-  
+
   const totalDuration = workoutHistory.reduce((sum, w) => sum + (w.duration || 0), 0);
   return Math.round(totalDuration / workoutHistory.length);
 }
@@ -412,15 +412,15 @@ export function calculateTotalWorkoutTime(workoutHistory) {
  */
 export function calculateWorkoutFrequency(workoutHistory, weeks = 4) {
   if (!Array.isArray(workoutHistory) || workoutHistory.length === 0) return 0;
-  
+
   const cutoffDate = new Date();
   cutoffDate.setDate(cutoffDate.getDate() - (weeks * 7));
-  
+
   const recentWorkouts = workoutHistory.filter(w => {
     const workoutDate = new Date(w.date);
     return workoutDate >= cutoffDate;
   });
-  
+
   return Math.round(recentWorkouts.length / weeks * 10) / 10;
 }
 

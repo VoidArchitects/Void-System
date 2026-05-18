@@ -206,7 +206,7 @@ function updateQuestState() {
     const isCompleted = completedQuestIds.includes(q.id);
     const meetsLevel = player.level >= (q.requiredLevel || 1);
     const notHidden = !q.hidden;
-    
+
     return !isActive && !isCompleted && meetsLevel && notHidden;
   });
 }
@@ -242,7 +242,7 @@ function acceptQuest(questId) {
 function abandonQuest(questId) {
   const activeQuestIds = Storage.getActiveQuests();
   const index = activeQuestIds.indexOf(questId);
-  
+
   if (index === -1) {
     return { success: false, message: 'Quest not active' };
   }
@@ -251,7 +251,7 @@ function abandonQuest(questId) {
   const player = Storage.getPlayer();
   player.activeQuests.splice(index, 1);
   Storage.savePlayer();
-  
+
   updateQuestState();
   showSystemNotification('QUEST ABANDONED', 'warning');
   return { success: true };
@@ -269,7 +269,7 @@ function completeQuest(questId) {
   updateQuestState();
 
   showSystemNotification(`QUEST COMPLETE — ${quest.title}`, 'success');
-  
+
   if (quest.rewards?.title) {
     setTimeout(() => {
       showSystemNotification(`TITLE UNLOCKED — "${quest.rewards.title}"`, 'info');
@@ -558,7 +558,7 @@ function showSystemNotification(msg, type = 'info') {
 async function init() {
   await loadQuests();
   renderQuestsPage();
-  
+
   // Auto-check active quests
   autoCheckQuestCompletion();
 }

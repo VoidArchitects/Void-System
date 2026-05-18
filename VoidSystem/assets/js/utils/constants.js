@@ -13,18 +13,18 @@ export const XP_CONSTANTS = {
   EXERCISE_COMPLETE: 25,
   WORKOUT_COMPLETE: 100,
   BONUS_ALL_SETS: 15,
-  
+
   // Quest rewards (base multipliers)
   QUEST_EASY: 100,
   QUEST_MEDIUM: 250,
   QUEST_HARD: 500,
   QUEST_BRUTAL: 1000,
   QUEST_LEGENDARY: 2500,
-  
+
   // Streak bonuses
   STREAK_MULTIPLIER: 0.1,  // 10% per day
   MAX_STREAK_BONUS: 0.5,   // Cap at 50%
-  
+
   // Level curve
   BASE_XP: 100,
   XP_EXPONENT: 1.5,
@@ -534,23 +534,23 @@ export const COLORS = {
   VOID_BLACK: '#040408',
   VOID_DARK: '#0a0a12',
   VOID_PANEL: '#0e0e1a',
-  
+
   // Accent
   ACCENT: '#7b5cfa',
   ACCENT_GLOW: 'rgba(123, 92, 250, 0.35)',
   ACCENT_DIM: 'rgba(123, 92, 250, 0.15)',
-  
+
   // Text
   TEXT_PRIMARY: '#e8e8f0',
   TEXT_DIM: '#6b6b88',
   TEXT_MUTED: '#3a3a55',
-  
+
   // Status
   SUCCESS: '#44ffaa',
   WARNING: '#ffaa44',
   DANGER: '#ff4466',
   INFO: '#44aaff',
-  
+
   // Borders
   BORDER: 'rgba(255,255,255,0.07)',
   BORDER_STRONG: 'rgba(255,255,255,0.12)',

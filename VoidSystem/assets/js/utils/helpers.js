@@ -52,28 +52,28 @@ export function qsa(selector, parent = document) {
  */
 export function createElement(tag, options = {}) {
   const el = document.createElement(tag);
-  
+
   if (options.className) el.className = options.className;
   if (options.id) el.id = options.id;
   if (options.text) el.textContent = options.text;
   if (options.html) el.innerHTML = options.html;
-  
+
   if (options.attrs) {
     Object.entries(options.attrs).forEach(([key, value]) => {
       el.setAttribute(key, value);
     });
   }
-  
+
   if (options.styles) {
     Object.assign(el.style, options.styles);
   }
-  
+
   if (options.data) {
     Object.entries(options.data).forEach(([key, value]) => {
       el.dataset[key] = value;
     });
   }
-  
+
   return el;
 }
 
@@ -197,7 +197,7 @@ export function sortBy(arr, key, ascending = true) {
   return [...arr].sort((a, b) => {
     const valA = a[key];
     const valB = b[key];
-    
+
     if (valA < valB) return ascending ? -1 : 1;
     if (valA > valB) return ascending ? 1 : -1;
     return 0;
@@ -374,7 +374,7 @@ export function deepClone(obj) {
  */
 export function deepMerge(target, source) {
   const result = { ...target };
-  
+
   for (const key in source) {
     if (source[key] instanceof Object && key in target) {
       result[key] = deepMerge(target[key], source[key]);
@@ -382,7 +382,7 @@ export function deepMerge(target, source) {
       result[key] = source[key];
     }
   }
-  
+
   return result;
 }
 
