@@ -129,27 +129,37 @@ class Router {
 
   redirectToIntro() {
     console.log('[ROUTER] Redirecting to intro — system not accepted');
-    window.location.href = this.getBaseURL() + ROUTES.special.intro;
+    // [FIX] Bugged code commented out below: using this.getBaseURL() generated ugly URLs like .//index.html
+    // window.location.href = this.getBaseURL() + ROUTES.special.intro;
+    window.location.href = getCorrectPath(ROUTES.special.intro);
   }
 
   redirectToDashboard() {
     console.log('[ROUTER] Redirecting to dashboard');
-    window.location.href = this.getBaseURL() + ROUTES.special.dashboard;
+    // [FIX] Bugged code commented out below
+    // window.location.href = this.getBaseURL() + ROUTES.special.dashboard;
+    window.location.href = getCorrectPath(ROUTES.special.dashboard);
   }
 
   redirectToBanned() {
     console.log('[ROUTER] Redirecting to banned page');
-    window.location.href = this.getBaseURL() + ROUTES.special.banned;
+    // [FIX] Bugged code commented out below
+    // window.location.href = this.getBaseURL() + ROUTES.special.banned;
+    window.location.href = getCorrectPath(ROUTES.special.banned);
   }
 
   redirectToRejected() {
     console.log('[ROUTER] Redirecting to rejected page');
-    window.location.href = this.getBaseURL() + ROUTES.special.rejected;
+    // [FIX] Bugged code commented out below
+    // window.location.href = this.getBaseURL() + ROUTES.special.rejected;
+    window.location.href = getCorrectPath(ROUTES.special.rejected);
   }
 
   navigateTo(route) {
     // Manual navigation helper
-    const fullPath = this.getBaseURL() + route;
+    // [FIX] Bugged code commented out below
+    // const fullPath = this.getBaseURL() + route;
+    const fullPath = getCorrectPath(route);
     console.log('[ROUTER] Navigating to:', fullPath);
     window.location.href = fullPath;
   }

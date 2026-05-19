@@ -243,6 +243,8 @@ function getMotivationMessage() {
 // STREAK CALCULATION HELPERS
 // ─────────────────────────────────────────────
 
+// [FIX] Commented out duplicated streak logic to prevent desyncs (use Storage.updateStreak() natively)
+/*
 function calculateStreakFromHistory(workoutHistory) {
     if (!workoutHistory || workoutHistory.length === 0) return 0;
 
@@ -268,6 +270,7 @@ function calculateStreakFromHistory(workoutHistory) {
 
     return streak;
 }
+*/
 
 function getStreakBonus(streakDays) {
     // 10% bonus per day, capped at 50%
@@ -284,7 +287,8 @@ export {
     loadStreakData,
     renderStreakPage,
     checkStreakWarnings,
-    calculateStreakFromHistory,
+    // [FIX] Commented out duplicated export
+    // calculateStreakFromHistory,
     getStreakBonus,
     StreakState,
 };

@@ -222,6 +222,8 @@ export function calculateStatPointsFromLevel(level) {
  * @param {string|Date} date2 - Second date
  * @returns {number} Days difference
  */
+// [FIX] Commented out duplicated date math to prevent desyncs (use dateUtils.js instead)
+/*
 export function calculateDaysBetween(date1, date2) {
   // Use new Date objects so we don't mutate the originals
   const d1 = typeof date1 === 'string' ? new Date(date1) : new Date(date1.getTime());
@@ -237,11 +239,6 @@ export function calculateDaysBetween(date1, date2) {
   return diffDays;
 }
 
-/**
- * Check if streak should continue
- * @param {string} lastWorkoutDate - Last workout date (ISO string)
- * @returns {boolean} True if streak is maintained
- */
 export function shouldContinueStreak(lastWorkoutDate) {
   if (!lastWorkoutDate) return false;
 
@@ -252,6 +249,7 @@ export function shouldContinueStreak(lastWorkoutDate) {
   // Streak continues if workout was today or yesterday
   return daysSince <= 1;
 }
+*/
 
 /**
  * Calculate streak bonus multiplier
@@ -555,8 +553,9 @@ export default {
   calculateTotalStats,
   calculateAverageStats,
   calculateStatPointsFromLevel,
-  calculateDaysBetween,
-  shouldContinueStreak,
+  // [FIX] Commented out duplicated exports
+  // calculateDaysBetween,
+  // shouldContinueStreak,
   calculateStreakBonus,
   calculateBMI,
   getBMICategory,

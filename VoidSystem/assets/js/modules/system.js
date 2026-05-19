@@ -398,6 +398,8 @@ async function handleRejection() {
 // ROUTE PROTECTION
 // ─────────────────────────────────────────────
 
+// [FIX] Commented out orphaned checkSystemAccess function since router.js handles this now
+/*
 function checkSystemAccess() {
   const player = Storage.getPlayer();
 
@@ -419,6 +421,7 @@ function checkSystemAccess() {
 
   return true;
 }
+*/
 
 // ─────────────────────────────────────────────
 // INIT
@@ -448,7 +451,8 @@ export {
   startIntroSequence,
   handleAcceptance,
   handleRejection,
-  checkSystemAccess
+  // [FIX] Commented out unused export
+  // checkSystemAccess
 };
 
 // Auto-init if on index page

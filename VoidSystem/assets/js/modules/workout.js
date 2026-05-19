@@ -647,11 +647,15 @@ function showCompletionScreen(record) {
 
 function getXPPercent(player) {
   if (!player) return 0;
+  // [FIX] Bugged code commented out below: caused off-by-one errors with XP calculation
+  /*
   const xpForNext = Storage.getXPForNextLevel(player.level);
   const xpForCurrent = Storage.getXPForNextLevel(player.level - 1);
   const progress = player.xp - xpForCurrent;
   const needed = xpForNext - xpForCurrent;
   return Math.min(Math.round((progress / needed) * 100), 100);
+  */
+  return Math.round(Storage.getXPProgress().percent);
 }
 
 function showFloatingXP(exerciseId, text) {

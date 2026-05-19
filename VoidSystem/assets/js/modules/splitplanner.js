@@ -126,7 +126,9 @@ function saveSplit() {
     };
 
     console.log('[SPLIT] Saving split:', splitData);
+    // [FIX] Uncommented Storage.updateSplit because it was commented out, preventing saves
     // Storage.updateSplit(splitData);
+    Storage.updateSplit(splitData);
 }
 
 // ─────────────────────────────────────────────

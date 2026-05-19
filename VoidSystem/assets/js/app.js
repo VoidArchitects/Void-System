@@ -5,7 +5,8 @@
 
 import { Storage } from './storage.js';
 import { initRouteGuard } from './router.js';
-import { checkSystemAccess } from './modules/system.js';
+// [FIX] Commented out unused import to remove orphaned logic
+// import { checkSystemAccess } from './modules/system.js';
 
 // ─────────────────────────────────────────────
 // APPLICATION STATE
@@ -47,7 +48,8 @@ async function init() {
         setupGlobalListeners();
 
         // 5. Initialize page-specific modules
-        await initPageModules();
+        // [FIX] Commented out duplicate module auto-initialization since modules self-initialize
+        // await initPageModules();
 
         // 6. Check for level-up or rank-up notifications
         checkProgressionNotifications();

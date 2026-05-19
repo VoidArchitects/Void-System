@@ -293,7 +293,10 @@ class StorageManager {
       });
     }
 
+    // [FIX] Missing notification flags implemented below
     // TODO: Trigger level-up notification/animation
+    sessionStorage.setItem('VOID_JUST_LEVELED_UP', 'true');
+    
     // TODO: Check for level-based achievements
     // TODO: Unlock level-gated quests
   }
@@ -318,7 +321,9 @@ class StorageManager {
 
   onRankPromotion(oldRank, newRank) {
     console.log(`[VOID] RANK PROMOTION: ${oldRank} → ${newRank}`);
+    // [FIX] Missing notification flags implemented below
     // TODO: Trigger rank-up notification
+    sessionStorage.setItem('VOID_JUST_RANKED_UP', 'true');
     // TODO: Award rank-based titles/achievements
   }
 
@@ -522,10 +527,22 @@ class StorageManager {
     this.savePlayer();
   }
 
+  // [FIX] Added missing updateSplit method
+  updateSplit(splitData) {
+    this.playerData.currentSplit = splitData.id;
+    this.playerData.weekSchedule = splitData.schedule;
+    this.savePlayer();
+  }
+
   // ─── UTILITY ───
 
   getDateString(date) {
-    return date.toISOString().split('T')[0];
+    // [FIX] Bugged code commented out below: used toISOString() which converts local time to UTC, breaking streaks at midnight UTC
+    // return date.toISOString().split('T')[0];
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   getDaysBetween(dateStr1, dateStr2) {
